@@ -1,0 +1,6 @@
+#!/bin/tcsh
+setenv PYTHIA8DATA $PWD/pythia8307/share/Pythia8/xmldoc
+setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:$PWD/pythia8307/lib
+
+./simulate.exe > output.txt
+echo Saved output to file output.txt
