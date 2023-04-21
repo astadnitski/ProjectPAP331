@@ -1,0 +1,923 @@
+
+ *------------------------------------------------------------------------------------* 
+ |                                                                                    | 
+ |  *------------------------------------------------------------------------------*  | 
+ |  |                                                                              |  | 
+ |  |                                                                              |  | 
+ |  |   PPP   Y   Y  TTTTT  H   H  III    A      Welcome to the Lund Monte Carlo!  |  | 
+ |  |   P  P   Y Y     T    H   H   I    A A     This is PYTHIA version 8.307      |  | 
+ |  |   PPP     Y      T    HHHHH   I   AAAAA    Last date of change: 25 Feb 2022  |  | 
+ |  |   P       Y      T    H   H   I   A   A                                      |  | 
+ |  |   P       Y      T    H   H  III  A   A    Now is 21 Apr 2023 at 13:00:48    |  | 
+ |  |                                                                              |  | 
+ |  |   Program documentation and an archive of historic versions is found on:     |  | 
+ |  |                                                                              |  | 
+ |  |                               https://pythia.org/                            |  | 
+ |  |                                                                              |  | 
+ |  |   PYTHIA is authored by a collaboration consisting of:                       |  | 
+ |  |                                                                              |  | 
+ |  |   Christian Bierlich, Nishita Desai, Leif Gellersen, Ilkka Helenius, Philip  |  | 
+ |  |   Ilten, Leif Lönnblad, Stephen Mrenna, Stefan Prestel, Christian Preuss,    |  | 
+ |  |   Torbjörn Sjöstrand, Peter Skands, Marius Utheim and Rob Verheyen.          |  | 
+ |  |                                                                              |  | 
+ |  |   The complete list of authors, including contact information and            |  | 
+ |  |   affiliations, can be found on https://pythia.org/.                         |  | 
+ |  |   Problems or bugs should be reported on email at authors@pythia.org.        |  | 
+ |  |                                                                              |  | 
+ |  |   The main program reference is 'An Introduction to PYTHIA 8.2',             |  | 
+ |  |   T. Sjöstrand et al, Comput. Phys. Commun. 191 (2015) 159                   |  | 
+ |  |   [arXiv:1410.3012 [hep-ph]]                                                 |  | 
+ |  |                                                                              |  | 
+ |  |   The main physics reference is the 'PYTHIA 6.4 Physics and Manual',         |  | 
+ |  |   T. Sjöstrand, S. Mrenna and P. Skands, JHEP05 (2006) 026 [hep-ph/0603175]  |  | 
+ |  |                                                                              |  | 
+ |  |   PYTHIA is released under the GNU General Public Licence version 2 or later.|  | 
+ |  |   Please respect the MCnet Guidelines for Event Generator Authors and Users. |  | 
+ |  |                                                                              |  | 
+ |  |   Disclaimer: this program comes without any guarantees.                     |  | 
+ |  |   Beware of errors and use common sense when interpreting results.           |  | 
+ |  |                                                                              |  | 
+ |  |   Copyright (C) 2022 Torbjörn Sjöstrand                                      |  | 
+ |  |                                                                              |  | 
+ |  |                                                                              |  | 
+ |  *------------------------------------------------------------------------------*  | 
+ |                                                                                    | 
+ *------------------------------------------------------------------------------------* 
+
+
+ *-------  PYTHIA Process Initialization  --------------------------*
+ |                                                                  |
+ | We collide p+ with p+ at a CM energy of 1.360e+04 GeV            |
+ |                                                                  |
+ |------------------------------------------------------------------|
+ |                                                    |             |
+ | Subprocess                                    Code |   Estimated |
+ |                                                    |    max (mb) |
+ |                                                    |             |
+ |------------------------------------------------------------------|
+ |                                                    |             |
+ | f fbar -> H (SM)                               901 |   2.134e-12 |
+ | g g -> H (SM)                                  902 |   5.996e-11 |
+ | gamma gamma -> H (SM)                          903 |   1.921e-15 |
+ | f fbar -> H0 Z0 (SM)                           904 |   1.205e-12 |
+ | f fbar -> H0 W+- (SM)                          905 |   2.189e-12 |
+ | f f' -> H0 f f'(Z0 Z0 fusion) (SM)             906 |   4.344e-12 |
+ | f_1 f_2 -> H0 f_3 f_4 (W+ W- fusion) (SM)      907 |   1.299e-11 |
+ | g g -> H t tbar (SM)                           908 |   1.384e-11 |
+ | q qbar -> H t tbar (SM)                        909 |   3.679e-12 |
+ |                                                                  |
+ *-------  End PYTHIA Process Initialization -----------------------*
+
+ *-------  PYTHIA Multiparton Interactions Initialization  ---------* 
+ |                                                                  | 
+ |                   sigmaNonDiffractive =    56.87 mb              | 
+ |                                                                  | 
+ |    pT0 =  2.63 gives sigmaInteraction =   323.45 mb: accepted    | 
+ |                                                                  | 
+ *-------  End PYTHIA Multiparton Interactions Initialization  -----* 
+
+ *-------  PYTHIA Flag + Mode + Parm + Word + FVec + MVec + PVec + WVec Settings (changes only)  ------------------* 
+ |                                                                                                                 | 
+ | Name                                          |                      Now |      Default         Min         Max | 
+ |                                               |                          |                                      | 
+ | Beams:eCM                                     |                13600.000 |    14000.000         0.0             | 
+ | HiggsSM:all                                   |                       on |          off                         | 
+ | Next:numberShowEvent                          |                        0 |            1           0             | 
+ |                                                                                                                 | 
+ *-------  End PYTHIA Flag + Mode + Parm + Word + FVec + MVec + PVec + WVec Settings  -----------------------------* 
+
+ --------  PYTHIA Particle Data Table (changed only)  ------------------------------------------------------------------------------
+ 
+      id   name            antiName         spn chg col      m0        mWidth      mMin       mMax       tau0    res dec ext vis wid
+             no onMode   bRatio   meMode     products 
+
+      25  h0                                  1   0   0  125.00000    0.00408  124.79583  125.20417  4.83238e-11   1   1   0   0   0
+              0     0   0.0000009    0        1       -1 
+              1     0   0.0000002    0        2       -2 
+              2     0   0.0002163    0        3       -3 
+              3     0   0.0288493    0        4       -4 
+              4     0   0.5768873    0        5       -5 
+              5     0   0.0000000    0        6       -6 
+              6     0   0.0000000    0       11      -11 
+              7     1   0.0002185    0       13      -13 
+              8     0   0.0628569    0       15      -15 
+              9     0   0.0850383    0       21       21 
+             10     0   0.0022965    0       22       22 
+             11     0   0.0016155    0       22       23 
+             12     0   0.0261758    0       23       23 
+             13     0   0.2158445    0       24      -24 
+             14     0   0.0000000  103  1000022  1000022 
+             15     0   0.0000000  103  1000023  1000022 
+             16     0   0.0000000  103  1000023  1000023 
+             17     0   0.0000000  103  1000025  1000022 
+             18     0   0.0000000  103  1000025  1000023 
+             19     0   0.0000000  103  1000025  1000025 
+             20     0   0.0000000  103  1000035  1000022 
+             21     0   0.0000000  103  1000035  1000023 
+             22     0   0.0000000  103  1000035  1000025 
+             23     0   0.0000000  103  1000035  1000035 
+             24     0   0.0000000  103  1000024 -1000024 
+             25     0   0.0000000  103  1000024 -1000037 
+             26     0   0.0000000  103  1000037 -1000024 
+             27     0   0.0000000  103  1000037 -1000037 
+             28     0   0.0000000  103  1000001 -1000001 
+             29     0   0.0000000  103  2000001 -2000001 
+             30     0   0.0000000  103  1000001 -2000001 
+             31     0   0.0000000  103 -1000001  2000001 
+             32     0   0.0000000  103  1000002 -1000002 
+             33     0   0.0000000  103  2000002 -2000002 
+             34     0   0.0000000  103  1000002 -2000002 
+             35     0   0.0000000  103 -1000002  2000002 
+             36     0   0.0000000  103  1000003 -1000003 
+             37     0   0.0000000  103  2000003 -2000003 
+             38     0   0.0000000  103  1000003 -2000003 
+             39     0   0.0000000  103 -1000003  2000003 
+             40     0   0.0000000  103  1000004 -1000004 
+             41     0   0.0000000  103  2000004 -2000004 
+             42     0   0.0000000  103  1000004 -2000004 
+             43     0   0.0000000  103 -1000004  2000004 
+             44     0   0.0000000  103  1000005 -1000005 
+             45     0   0.0000000  103  2000005 -2000005 
+             46     0   0.0000000  103  1000005 -2000005 
+             47     0   0.0000000  103 -1000005  2000005 
+             48     0   0.0000000  103  1000006 -1000006 
+             49     0   0.0000000  103  2000006 -2000006 
+             50     0   0.0000000  103  1000006 -2000006 
+             51     0   0.0000000  103 -1000006  2000006 
+             52     0   0.0000000  103  1000011 -1000011 
+             53     0   0.0000000  103  2000011 -2000011 
+             54     0   0.0000000  103  1000011 -2000011 
+             55     0   0.0000000  103 -1000011  2000011 
+             56     0   0.0000000  103  1000012 -1000012 
+             57     0   0.0000000  103  2000012 -2000012 
+             58     0   0.0000000  103  1000012 -2000012 
+             59     0   0.0000000  103 -1000012  2000012 
+             60     0   0.0000000  103  1000013 -1000013 
+             61     0   0.0000000  103  2000013 -2000013 
+             62     0   0.0000000  103  1000013 -2000013 
+             63     0   0.0000000  103 -1000013  2000013 
+             64     0   0.0000000  103  1000014 -1000014 
+             65     0   0.0000000  103  2000014 -2000014 
+             66     0   0.0000000  103  1000014 -2000014 
+             67     0   0.0000000  103 -1000014  2000014 
+             68     0   0.0000000  103  1000015 -1000015 
+             69     0   0.0000000  103  2000015 -2000015 
+             70     0   0.0000000  103  1000015 -2000015 
+             71     0   0.0000000  103 -1000015  2000015 
+             72     0   0.0000000  103  1000016 -1000016 
+             73     0   0.0000000  103  2000016 -2000016 
+             74     0   0.0000000  103  1000016 -2000016 
+             75     0   0.0000000  103 -1000016  2000016 
+
+ --------  End PYTHIA Particle Data Table  -----------------------------------------------------------------------------------------
+
+
+ --------  PYTHIA Info Listing  ---------------------------------------- 
+ 
+ Beam A: id =   2212, pz =  6.800e+03, e =  6.800e+03, m =  9.383e-01.
+ Beam B: id =   2212, pz = -6.800e+03, e =  6.800e+03, m =  9.383e-01.
+
+ In 1: id =   21, x =  2.840e-04, pdf =  7.121e+01 at Q2 =  1.562e+04.
+ In 2: id =   21, x =  2.975e-01, pdf =  1.169e-01 at same Q2.
+
+ Subprocess g g -> H (SM) with code 902 is 2 -> 1.
+ It has sHat =  1.562e+04.
+     alphaEM =  7.846e-03,  alphaS =  1.238e-01    at Q2 =  1.562e+04.
+
+ Impact parameter b =  8.688e-02 gives enhancement factor =  4.111e+00.
+ Max pT scale for MPI =  1.360e+04, ISR =  1.360e+04, FSR =  1.360e+04.
+ Number of MPI =    15, ISR =    25, FSRproc =    79, FSRreson =     1.
+
+ --------  End PYTHIA Info Listing  ------------------------------------
+
+ --------  PYTHIA Event Listing  (hard process)  -----------------------------------------------------------------------------------
+ 
+    no         id  name            status     mothers   daughters     colours      p_x        p_y        p_z         e          m 
+     0         90  (system)           -11     0     0     0     0     0     0      0.000      0.000      0.000  13600.000  13600.000
+     1       2212  (p+)               -12     0     0     3     0     0     0      0.000      0.000   6800.000   6800.000      0.938
+     2       2212  (p+)               -12     0     0     4     0     0     0      0.000      0.000  -6800.000   6800.000      0.938
+     3         21  (g)                -21     1     0     5     0   101   102      0.000      0.000      1.931      1.931      0.000
+     4         21  (g)                -21     2     0     5     0   102   101      0.000      0.000  -2022.834   2022.834      0.000
+     5         25  (h0)               -22     3     4     6     7     0     0      0.000      0.000  -2020.903   2024.765    124.998
+     6         13  mu-                 23     5     0     0     0     0     0    -32.721    -52.750  -1128.220   1129.927      0.106
+     7        -13  mu+                 23     5     0     0     0     0     0     32.721     52.750   -892.682    894.838      0.106
+                                   Charge sum:  0.000           Momentum sum:      0.000      0.000  -2020.903   2024.765    124.998
+
+ --------  End PYTHIA Event Listing  -----------------------------------------------------------------------------------------------
+0 : Mu- transverse momentum : 62.488
+0 : Mu- pseudorapidity : -3.354
+0 : Mu+ transverse momentum : 62.282
+0 : Mu+ pseudorapidity : -3.591
+No
+
+1 : Mu- transverse momentum : 52.811
+1 : Mu- pseudorapidity : 0.341
+1 : Mu+ transverse momentum : 72.413
+1 : Mu+ pseudorapidity : 0.673
+Yes
+
+2 : Mu- transverse momentum : 55.262
+2 : Mu- pseudorapidity : -1.445
+2 : Mu+ transverse momentum : 43.858
+2 : Mu+ pseudorapidity : -2.882
+No
+
+3 : Mu- transverse momentum : 43.819
+3 : Mu- pseudorapidity : 2.154
+3 : Mu+ transverse momentum : 45.916
+3 : Mu+ pseudorapidity : 3.346
+No
+
+4 : Mu- transverse momentum : 0.311
+4 : Mu- pseudorapidity : -4.061
+4 : Mu+ transverse momentum : 43.840
+4 : Mu+ pseudorapidity : 3.226
+No
+
+5 : Mu- transverse momentum : 23.532
+5 : Mu- pseudorapidity : -0.880
+5 : Mu+ transverse momentum : 47.178
+5 : Mu+ pseudorapidity : 0.990
+Yes
+
+6 : Mu- transverse momentum : 53.629
+6 : Mu- pseudorapidity : -1.112
+6 : Mu+ transverse momentum : 39.339
+6 : Mu+ pseudorapidity : -2.808
+No
+
+7 : Mu- transverse momentum : 15.958
+7 : Mu- pseudorapidity : -1.153
+7 : Mu+ transverse momentum : 152.237
+7 : Mu+ pseudorapidity : 0.397
+No
+
+8 : Mu- transverse momentum : 70.542
+8 : Mu- pseudorapidity : 0.814
+8 : Mu+ transverse momentum : 26.019
+8 : Mu+ pseudorapidity : -1.152
+Yes
+
+9 : Mu- transverse momentum : 129.529
+9 : Mu- pseudorapidity : -0.048
+9 : Mu+ transverse momentum : 31.164
+9 : Mu+ pseudorapidity : 0.078
+Yes
+
+10 : Mu- transverse momentum : 42.870
+10 : Mu- pseudorapidity : 0.713
+10 : Mu+ transverse momentum : 172.923
+10 : Mu+ pseudorapidity : 0.706
+Yes
+
+11 : Mu- transverse momentum : 46.524
+11 : Mu- pseudorapidity : 1.661
+11 : Mu+ transverse momentum : 39.205
+11 : Mu+ pseudorapidity : 3.439
+No
+
+12 : Mu- transverse momentum : 36.263
+12 : Mu- pseudorapidity : -2.276
+12 : Mu+ transverse momentum : 71.616
+12 : Mu+ pseudorapidity : -0.342
+No
+
+13 : Mu- transverse momentum : 48.982
+13 : Mu- pseudorapidity : -1.972
+13 : Mu+ transverse momentum : 35.943
+13 : Mu+ pseudorapidity : -0.049
+Yes
+
+14 : Mu- transverse momentum : 74.722
+14 : Mu- pseudorapidity : -1.080
+14 : Mu+ transverse momentum : 21.738
+14 : Mu+ pseudorapidity : 0.937
+Yes
+
+15 : Mu- transverse momentum : 67.742
+15 : Mu- pseudorapidity : 1.972
+15 : Mu+ transverse momentum : 43.085
+15 : Mu+ pseudorapidity : 0.814
+Yes
+
+16 : Mu- transverse momentum : 16.998
+16 : Mu- pseudorapidity : 0.430
+16 : Mu+ transverse momentum : 156.852
+16 : Mu+ pseudorapidity : -1.135
+No
+
+17 : Mu- transverse momentum : 37.537
+17 : Mu- pseudorapidity : -3.905
+17 : Mu+ transverse momentum : 14.117
+17 : Mu+ pseudorapidity : -0.517
+No
+
+18 : Mu- transverse momentum : 62.560
+18 : Mu- pseudorapidity : 0.908
+18 : Mu+ transverse momentum : 59.549
+18 : Mu+ pseudorapidity : 0.092
+Yes
+
+19 : Mu- transverse momentum : 64.127
+19 : Mu- pseudorapidity : 1.997
+19 : Mu+ transverse momentum : 53.026
+19 : Mu+ pseudorapidity : 2.765
+No
+
+20 : Mu- transverse momentum : 58.175
+20 : Mu- pseudorapidity : -1.683
+20 : Mu+ transverse momentum : 85.897
+20 : Mu+ pseudorapidity : -1.402
+Yes
+
+21 : Mu- transverse momentum : 33.900
+21 : Mu- pseudorapidity : 0.134
+21 : Mu+ transverse momentum : 110.664
+21 : Mu+ pseudorapidity : -0.277
+Yes
+
+22 : Mu- transverse momentum : 53.653
+22 : Mu- pseudorapidity : -1.731
+22 : Mu+ transverse momentum : 60.639
+22 : Mu+ pseudorapidity : -0.815
+Yes
+
+23 : Mu- transverse momentum : 55.567
+23 : Mu- pseudorapidity : 2.068
+23 : Mu+ transverse momentum : 62.228
+23 : Mu+ pseudorapidity : 2.741
+No
+
+24 : Mu- transverse momentum : 51.260
+24 : Mu- pseudorapidity : -0.748
+24 : Mu+ transverse momentum : 169.106
+24 : Mu+ pseudorapidity : -1.069
+Yes
+
+25 : Mu- transverse momentum : 169.932
+25 : Mu- pseudorapidity : -0.176
+25 : Mu+ transverse momentum : 59.066
+25 : Mu+ pseudorapidity : -0.289
+Yes
+
+26 : Mu- transverse momentum : 76.983
+26 : Mu- pseudorapidity : 0.754
+26 : Mu+ transverse momentum : 67.005
+26 : Mu+ pseudorapidity : 1.160
+Yes
+
+27 : Mu- transverse momentum : 89.756
+27 : Mu- pseudorapidity : -0.303
+27 : Mu+ transverse momentum : 34.180
+27 : Mu+ pseudorapidity : 0.955
+Yes
+
+28 : Mu- transverse momentum : 97.375
+28 : Mu- pseudorapidity : 3.164
+28 : Mu+ transverse momentum : 39.475
+28 : Mu+ pseudorapidity : 2.558
+No
+
+29 : Mu- transverse momentum : 55.056
+29 : Mu- pseudorapidity : -1.373
+29 : Mu+ transverse momentum : 72.875
+29 : Mu+ pseudorapidity : -1.085
+Yes
+
+30 : Mu- transverse momentum : 63.214
+30 : Mu- pseudorapidity : -1.739
+30 : Mu+ transverse momentum : 53.329
+30 : Mu+ pseudorapidity : -0.935
+Yes
+
+31 : Mu- transverse momentum : 44.632
+31 : Mu- pseudorapidity : 1.376
+31 : Mu+ transverse momentum : 1.144
+31 : Mu+ pseudorapidity : 3.738
+No
+
+32 : Mu- transverse momentum : 32.962
+32 : Mu- pseudorapidity : 1.975
+32 : Mu+ transverse momentum : 0.288
+32 : Mu+ pseudorapidity : -2.409
+No
+
+33 : Mu- transverse momentum : 61.906
+33 : Mu- pseudorapidity : -0.951
+33 : Mu+ transverse momentum : 72.388
+33 : Mu+ pseudorapidity : -0.729
+Yes
+
+34 : Mu- transverse momentum : 13.992
+34 : Mu- pseudorapidity : 1.234
+34 : Mu+ transverse momentum : 21.386
+34 : Mu+ pseudorapidity : -2.685
+No
+
+35 : Mu- transverse momentum : 39.959
+35 : Mu- pseudorapidity : 0.447
+35 : Mu+ transverse momentum : 0.333
+35 : Mu+ pseudorapidity : 0.075
+No
+
+36 : Mu- transverse momentum : 99.019
+36 : Mu- pseudorapidity : -1.777
+36 : Mu+ transverse momentum : 63.483
+36 : Mu+ pseudorapidity : -0.714
+Yes
+
+37 : Mu- transverse momentum : 45.401
+37 : Mu- pseudorapidity : 1.091
+37 : Mu+ transverse momentum : 33.453
+37 : Mu+ pseudorapidity : -1.010
+Yes
+
+38 : Mu- transverse momentum : 80.586
+38 : Mu- pseudorapidity : 0.474
+38 : Mu+ transverse momentum : 42.560
+38 : Mu+ pseudorapidity : -0.288
+Yes
+
+39 : Mu- transverse momentum : 35.371
+39 : Mu- pseudorapidity : -2.030
+39 : Mu+ transverse momentum : 14.843
+39 : Mu+ pseudorapidity : 1.280
+No
+
+40 : Mu- transverse momentum : 65.407
+40 : Mu- pseudorapidity : -0.223
+40 : Mu+ transverse momentum : 58.317
+40 : Mu+ pseudorapidity : -0.656
+Yes
+
+41 : Mu- transverse momentum : 40.241
+41 : Mu- pseudorapidity : -0.057
+41 : Mu+ transverse momentum : 45.029
+41 : Mu+ pseudorapidity : -2.174
+No
+
+42 : Mu- transverse momentum : 43.359
+42 : Mu- pseudorapidity : 0.837
+42 : Mu+ transverse momentum : 53.711
+42 : Mu+ pseudorapidity : -0.665
+Yes
+
+43 : Mu- transverse momentum : 44.371
+43 : Mu- pseudorapidity : 2.644
+43 : Mu+ transverse momentum : 96.887
+43 : Mu+ pseudorapidity : 1.188
+No
+
+44 : Mu- transverse momentum : 35.916
+44 : Mu- pseudorapidity : 0.484
+44 : Mu+ transverse momentum : 31.842
+44 : Mu+ pseudorapidity : -2.088
+Yes
+
+45 : Mu- transverse momentum : 60.836
+45 : Mu- pseudorapidity : -0.244
+45 : Mu+ transverse momentum : 175.590
+45 : Mu+ pseudorapidity : 0.612
+Yes
+
+46 : Mu- transverse momentum : 40.029
+46 : Mu- pseudorapidity : 1.586
+46 : Mu+ transverse momentum : 47.760
+46 : Mu+ pseudorapidity : -0.247
+Yes
+
+47 : Mu- transverse momentum : 75.787
+47 : Mu- pseudorapidity : 0.474
+47 : Mu+ transverse momentum : 58.750
+47 : Mu+ pseudorapidity : 0.074
+Yes
+
+48 : Mu- transverse momentum : 58.134
+48 : Mu- pseudorapidity : 1.023
+48 : Mu+ transverse momentum : 42.366
+48 : Mu+ pseudorapidity : -0.398
+Yes
+
+49 : Mu- transverse momentum : 54.446
+49 : Mu- pseudorapidity : 1.873
+49 : Mu+ transverse momentum : 7.301
+49 : Mu+ pseudorapidity : -1.777
+No
+
+50 : Mu- transverse momentum : 59.419
+50 : Mu- pseudorapidity : -0.539
+50 : Mu+ transverse momentum : 0.509
+50 : Mu+ pseudorapidity : 0.109
+No
+
+51 : Mu- transverse momentum : 86.689
+51 : Mu- pseudorapidity : 0.824
+51 : Mu+ transverse momentum : 46.031
+51 : Mu+ pseudorapidity : 2.282
+No
+
+52 : Mu- transverse momentum : 63.032
+52 : Mu- pseudorapidity : 0.071
+52 : Mu+ transverse momentum : 54.887
+52 : Mu+ pseudorapidity : 0.265
+Yes
+
+53 : Mu- transverse momentum : 43.606
+53 : Mu- pseudorapidity : -0.340
+53 : Mu+ transverse momentum : 86.551
+53 : Mu+ pseudorapidity : 0.073
+Yes
+
+54 : Mu- transverse momentum : 2.551
+54 : Mu- pseudorapidity : 1.325
+54 : Mu+ transverse momentum : 65.296
+54 : Mu+ pseudorapidity : -0.703
+No
+
+55 : Mu- transverse momentum : 71.134
+55 : Mu- pseudorapidity : -0.131
+55 : Mu+ transverse momentum : 28.906
+55 : Mu+ pseudorapidity : -2.211
+No
+
+56 : Mu- transverse momentum : 101.967
+56 : Mu- pseudorapidity : 0.696
+56 : Mu+ transverse momentum : 29.277
+56 : Mu+ pseudorapidity : -0.687
+Yes
+
+57 : Mu- transverse momentum : 78.432
+57 : Mu- pseudorapidity : -0.624
+57 : Mu+ transverse momentum : 4.142
+57 : Mu+ pseudorapidity : -2.582
+No
+
+58 : Mu- transverse momentum : 55.818
+58 : Mu- pseudorapidity : 0.713
+58 : Mu+ transverse momentum : 40.732
+58 : Mu+ pseudorapidity : 2.723
+No
+
+59 : Mu- transverse momentum : 68.897
+59 : Mu- pseudorapidity : -0.764
+59 : Mu+ transverse momentum : 1.326
+59 : Mu+ pseudorapidity : 2.990
+No
+
+60 : Mu- transverse momentum : 150.716
+60 : Mu- pseudorapidity : -1.086
+60 : Mu+ transverse momentum : 26.868
+60 : Mu+ pseudorapidity : -1.221
+Yes
+
+61 : Mu- transverse momentum : 51.139
+61 : Mu- pseudorapidity : 2.256
+61 : Mu+ transverse momentum : 29.001
+61 : Mu+ pseudorapidity : -0.191
+No
+
+62 : Mu- transverse momentum : 74.879
+62 : Mu- pseudorapidity : -2.322
+62 : Mu+ transverse momentum : 56.613
+62 : Mu+ pseudorapidity : -2.800
+No
+
+63 : Mu- transverse momentum : 31.730
+63 : Mu- pseudorapidity : -2.120
+63 : Mu+ transverse momentum : 32.969
+63 : Mu+ pseudorapidity : 0.697
+No
+
+64 : Mu- transverse momentum : 61.387
+64 : Mu- pseudorapidity : -1.637
+64 : Mu+ transverse momentum : 40.334
+64 : Mu+ pseudorapidity : -3.063
+No
+
+65 : Mu- transverse momentum : 55.927
+65 : Mu- pseudorapidity : 1.435
+65 : Mu+ transverse momentum : 74.884
+65 : Mu+ pseudorapidity : 1.787
+Yes
+
+66 : Mu- transverse momentum : 114.250
+66 : Mu- pseudorapidity : -1.025
+66 : Mu+ transverse momentum : 26.564
+66 : Mu+ pseudorapidity : 0.389
+Yes
+
+67 : Mu- transverse momentum : 57.812
+67 : Mu- pseudorapidity : -1.920
+67 : Mu+ transverse momentum : 47.762
+67 : Mu+ pseudorapidity : -0.607
+Yes
+
+68 : Mu- transverse momentum : 58.114
+68 : Mu- pseudorapidity : -0.665
+68 : Mu+ transverse momentum : 28.759
+68 : Mu+ pseudorapidity : 1.277
+Yes
+
+69 : Mu- transverse momentum : 95.228
+69 : Mu- pseudorapidity : 0.874
+69 : Mu+ transverse momentum : 40.226
+69 : Mu+ pseudorapidity : 0.586
+Yes
+
+70 : Mu- transverse momentum : 155.748
+70 : Mu- pseudorapidity : 1.011
+70 : Mu+ transverse momentum : 69.296
+70 : Mu+ pseudorapidity : 0.552
+Yes
+
+71 : Mu- transverse momentum : 71.775
+71 : Mu- pseudorapidity : 2.120
+71 : Mu+ transverse momentum : 52.526
+71 : Mu+ pseudorapidity : 1.019
+No
+
+72 : Mu- transverse momentum : 37.634
+72 : Mu- pseudorapidity : 0.332
+72 : Mu+ transverse momentum : 104.010
+72 : Mu+ pseudorapidity : -0.123
+Yes
+
+73 : Mu- transverse momentum : 147.489
+73 : Mu- pseudorapidity : -1.927
+73 : Mu+ transverse momentum : 26.001
+73 : Mu+ pseudorapidity : -2.548
+No
+
+74 : Mu- transverse momentum : 37.111
+74 : Mu- pseudorapidity : -2.063
+74 : Mu+ transverse momentum : 5.779
+74 : Mu+ pseudorapidity : 2.251
+No
+
+75 : Mu- transverse momentum : 431.005
+75 : Mu- pseudorapidity : 0.566
+75 : Mu+ transverse momentum : 7.895
+75 : Mu+ pseudorapidity : -1.109
+No
+
+76 : Mu- transverse momentum : 7.428
+76 : Mu- pseudorapidity : -1.804
+76 : Mu+ transverse momentum : 39.245
+76 : Mu+ pseudorapidity : 2.210
+No
+
+77 : Mu- transverse momentum : 70.642
+77 : Mu- pseudorapidity : -0.884
+77 : Mu+ transverse momentum : 50.662
+77 : Mu+ pseudorapidity : -0.116
+Yes
+
+78 : Mu- transverse momentum : 54.804
+78 : Mu- pseudorapidity : -0.254
+78 : Mu+ transverse momentum : 22.489
+78 : Mu+ pseudorapidity : -2.619
+No
+
+79 : Mu- transverse momentum : 63.387
+79 : Mu- pseudorapidity : 1.395
+79 : Mu+ transverse momentum : 68.959
+79 : Mu+ pseudorapidity : 1.276
+Yes
+
+80 : Mu- transverse momentum : 44.835
+80 : Mu- pseudorapidity : -2.485
+80 : Mu+ transverse momentum : 83.444
+80 : Mu+ pseudorapidity : -2.095
+No
+
+81 : Mu- transverse momentum : 67.009
+81 : Mu- pseudorapidity : -1.718
+81 : Mu+ transverse momentum : 35.183
+81 : Mu+ pseudorapidity : -0.079
+Yes
+
+82 : Mu- transverse momentum : 61.572
+82 : Mu- pseudorapidity : 0.222
+82 : Mu+ transverse momentum : 58.053
+82 : Mu+ pseudorapidity : -0.380
+Yes
+
+83 : Mu- transverse momentum : 21.022
+83 : Mu- pseudorapidity : 1.639
+83 : Mu+ transverse momentum : 55.543
+83 : Mu+ pseudorapidity : -0.786
+Yes
+
+84 : Mu- transverse momentum : 37.942
+84 : Mu- pseudorapidity : -1.279
+84 : Mu+ transverse momentum : 59.406
+84 : Mu+ pseudorapidity : 0.738
+Yes
+
+85 : Mu- transverse momentum : 40.709
+85 : Mu- pseudorapidity : -1.692
+85 : Mu+ transverse momentum : 37.531
+85 : Mu+ pseudorapidity : -3.789
+No
+
+86 : Mu- transverse momentum : 48.130
+86 : Mu- pseudorapidity : -0.604
+86 : Mu+ transverse momentum : 49.349
+86 : Mu+ pseudorapidity : -1.474
+Yes
+
+87 : Mu- transverse momentum : 0.446
+87 : Mu- pseudorapidity : -0.772
+87 : Mu+ transverse momentum : 69.210
+87 : Mu+ pseudorapidity : -1.201
+No
+
+88 : Mu- transverse momentum : 32.898
+88 : Mu- pseudorapidity : 2.942
+88 : Mu+ transverse momentum : 74.822
+88 : Mu+ pseudorapidity : 1.008
+No
+
+89 : Mu- transverse momentum : 39.225
+89 : Mu- pseudorapidity : -0.879
+89 : Mu+ transverse momentum : 53.234
+89 : Mu+ pseudorapidity : -2.549
+No
+
+90 : Mu- transverse momentum : 62.796
+90 : Mu- pseudorapidity : -2.629
+90 : Mu+ transverse momentum : 12.663
+90 : Mu+ pseudorapidity : 0.419
+No
+
+91 : Mu- transverse momentum : 65.185
+91 : Mu- pseudorapidity : -1.200
+91 : Mu+ transverse momentum : 57.007
+91 : Mu+ pseudorapidity : -1.550
+Yes
+
+92 : Mu- transverse momentum : 138.496
+92 : Mu- pseudorapidity : 0.547
+92 : Mu+ transverse momentum : 12.859
+92 : Mu+ pseudorapidity : -0.409
+No
+
+93 : Mu- transverse momentum : 19.117
+93 : Mu- pseudorapidity : -0.606
+93 : Mu+ transverse momentum : 37.331
+93 : Mu+ pseudorapidity : -3.614
+No
+
+94 : Mu- transverse momentum : 105.378
+94 : Mu- pseudorapidity : 1.182
+94 : Mu+ transverse momentum : 32.657
+94 : Mu+ pseudorapidity : 0.045
+Yes
+
+95 : Mu- transverse momentum : 33.506
+95 : Mu- pseudorapidity : -0.564
+95 : Mu+ transverse momentum : 41.330
+95 : Mu+ pseudorapidity : -2.803
+No
+
+96 : Mu- transverse momentum : 106.991
+96 : Mu- pseudorapidity : -0.672
+96 : Mu+ transverse momentum : 119.007
+96 : Mu+ pseudorapidity : -0.367
+Yes
+
+97 : Mu- transverse momentum : 56.344
+97 : Mu- pseudorapidity : -2.364
+97 : Mu+ transverse momentum : 66.192
+97 : Mu+ pseudorapidity : -3.443
+No
+
+98 : Mu- transverse momentum : 60.125
+98 : Mu- pseudorapidity : 1.077
+98 : Mu+ transverse momentum : 75.490
+98 : Mu+ pseudorapidity : 1.200
+Yes
+
+99 : Mu- transverse momentum : 53.623
+99 : Mu- pseudorapidity : -3.029
+99 : Mu+ transverse momentum : 59.854
+99 : Mu+ pseudorapidity : -2.093
+No
+
+
+ *-------  PYTHIA Event and Cross Section Statistics  -------------------------------------------------------------*
+ |                                                                                                                 |
+ | Subprocess                                    Code |            Number of events       |      sigma +- delta    |
+ |                                                    |       Tried   Selected   Accepted |     (estimated) (mb)   |
+ |                                                    |                                   |                        |
+ |-----------------------------------------------------------------------------------------------------------------|
+ |                                                    |                                   |                        |
+ | f fbar -> H (SM)                               901 |          19          1          1 |   1.091e-13  1.091e-13 |
+ | g g -> H (SM)                                  902 |         748         69         69 |   5.729e-12  5.049e-13 |
+ | gamma gamma -> H (SM)                          903 |           0          0          0 |   0.000e+00  0.000e+00 |
+ | f fbar -> H0 Z0 (SM)                           904 |          11          2          2 |   2.498e-13  8.862e-14 |
+ | f fbar -> H0 W+- (SM)                          905 |          33          8          8 |   3.675e-13  8.583e-14 |
+ | f f' -> H0 f f'(Z0 Z0 fusion) (SM)             906 |          48          5          5 |   2.353e-13  6.165e-14 |
+ | f_1 f_2 -> H0 f_3 f_4 (W+ W- fusion) (SM)      907 |         170         13         13 |   8.246e-13  1.343e-13 |
+ | g g -> H t tbar (SM)                           908 |         198          1          1 |   5.840e-14  5.840e-14 |
+ | q qbar -> H t tbar (SM)                        909 |          40          1          1 |   2.568e-14  2.568e-14 |
+ |                                                    |                                   |                        |
+ | sum                                                |        1267        100        100 |   7.599e-12  5.549e-13 |
+ |                                                                                                                 |
+ *-------  End PYTHIA Event and Cross Section Statistics ----------------------------------------------------------*
+
+ *-------  PYTHIA Error and Warning Messages Statistics  ----------------------------------------------------------* 
+ |                                                                                                                 | 
+ |  times   message                                                                                                | 
+ |                                                                                                                 | 
+ |      0   no errors or warnings to report                                                                        | 
+ |                                                                                                                 | 
+ *-------  End PYTHIA Error and Warning Messages Statistics  ------------------------------------------------------* 
+
+
+  2023-04-21 13:00       Transverse momentum
+
+        5.00*10^ 0                                                         X                                            
+        4.80*10^ 0                                                         X                                            
+        4.60*10^ 0                                                         X                                            
+        4.40*10^ 0                                                         X                                            
+        4.20*10^ 0                                                         X                                            
+        4.00*10^ 0                                       X                 X                                            
+        3.80*10^ 0                                       X                 X                                            
+        3.60*10^ 0                                       X                 X                                            
+        3.40*10^ 0                                       X                 X                                            
+        3.20*10^ 0                                       X                 X                                            
+        3.00*10^ 0                                       X  X  XX        X X  X  XXX                                    
+        2.80*10^ 0                                       X  X  XX        X X  X  XXX                                    
+        2.60*10^ 0                                       X  X  XX        X X  X  XXX                                    
+        2.40*10^ 0                                       X  X  XX        X X  X  XXX                                    
+        2.20*10^ 0                                       X  X  XX        X X  X  XXX                                    
+        2.00*10^ 0  X                               XX X X XX  XX   X  X XXX  X XXXX X X  XX  X                         
+        1.80*10^ 0  X                               XX X X XX  XX   X  X XXX  X XXXX X X  XX  X                         
+        1.60*10^ 0  X                               XX X X XX  XX   X  X XXX  X XXXX X X  XX  X                         
+        1.40*10^ 0  X                               XX X X XX  XX   X  X XXX  X XXXX X X  XX  X                         
+        1.20*10^ 0  X                               XX X X XX  XX   X  X XXX  X XXXX X X  XX  X                         
+        1.00*10^ 0  X X    X     X XX  X X X       XXX XXX XX XXXXX X  XXXXXXXXXXXXXXX XX XX  XXX X X     X  X     X X X
+        0.80*10^ 0  X X    X     X XX  X X X       XXX XXX XX XXXXX X  XXXXXXXXXXXXXXX XX XX  XXX X X     X  X     X X X
+        0.60*10^ 0  X X    X     X XX  X X X       XXX XXX XX XXXXX X  XXXXXXXXXXXXXXX XX XX  XXX X X     X  X     X X X
+        0.40*10^ 0  X X    X     X XX  X X X       XXX XXX XX XXXXX X  XXXXXXXXXXXXXXX XX XX  XXX X X     X  X     X X X
+        0.20*10^ 0  X X    X     X XX  X X X       XXX XXX XX XXXXX X  XXXXXXXXXXXXXXX XX XX  XXX X X     X  X     X X X
+
+          Contents                                                                                                      
+            *10^ 0  2010000100000101100101010000000122021402301331102002132511312333120210220021101010000010010000010101
+            *10^-1  0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+            *10^-2  0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+            *10^-3  0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+
+          Low edge                                                                                                      
+            *10^ 1  0000000000111111111122222222223333333333444444444455555555556666666666777777777788888888889999999999
+            *10^ 0  0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
+            *10^-1  0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+
+   Entries  =         100    Mean =  5.1511e+01    Underflow =  0.0000e+00    Low edge  =  0.0000e+00
+   All chan =  8.9000e+01    Rms  =  2.0672e+01    Overflow  =  1.1000e+01    High edge =  1.0000e+02
+
+
+  2023-04-21 13:00       Pseudorapidity
+
+        2.16*10^ 1  3                                                                                                   
+        2.08*10^ 1  X                                                                                                   
+        2.00*10^ 1  X                                                                                                   
+        1.92*10^ 1  X                                                                                                   
+        1.84*10^ 1  X                                                                                                   
+        1.76*10^ 1  X3                                                                                                  
+        1.68*10^ 1  XX                                                                                                  
+        1.60*10^ 1  XX                                                                                                  
+        1.52*10^ 1  XX                                                                                                  
+        1.44*10^ 1  XX                                                                                                  
+        1.36*10^ 1  XX                                                                                                  
+        1.28*10^ 1  XX                                                                                                  
+        1.20*10^ 1  XX                                                                                                  
+        1.12*10^ 1  XX                                                                                                  
+        1.04*10^ 1  XX                                                                                                  
+        0.96*10^ 1  XX                                                                                                  
+        0.88*10^ 1  XX                                                                                                  
+        0.80*10^ 1  XX                                                                                                  
+        0.72*10^ 1  XX                                                                                                  
+        0.64*10^ 1  XX5                                                                                                 
+        0.56*10^ 1  XXX                                                                                                 
+        0.48*10^ 1  XXX                                                                                                 
+        0.40*10^ 1  XXX                                                                                                 
+        0.32*10^ 1  XXX                                                                                                 
+        0.24*10^ 1  XXX                                                                                                 
+        0.16*10^ 1  XXX2                                                                                                
+        0.08*10^ 1  XXXX                                                                                                
+
+          Contents                                                                                                      
+            *10^ 1  2100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+            *10^ 0  1761000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+            *10^-1  0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+            *10^-2  0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+
+          Low edge                                                                                                      
+            *10^ 1  0000000000111111111122222222223333333333444444444455555555556666666666777777777788888888889999999999
+            *10^ 0  0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
+            *10^-1  0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+
+   Entries  =         100    Mean =  1.2111e+00    Underflow =  5.5000e+01    Low edge  =  0.0000e+00
+   All chan =  4.5000e+01    Rms  =  7.7810e-01    Overflow  =  0.0000e+00    High edge =  1.0000e+02

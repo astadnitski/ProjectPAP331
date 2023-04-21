@@ -20,6 +20,8 @@
 
 -- Subtract plot with background from plot with background and signal to get signal plot
 
+Should we limit mass phase space?
+
 Advice:
 
 Use Landau distribution for fits. Or try Gaussian or something it's a good approximation. For the signal Breit-Wigner is probably best
