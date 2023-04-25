@@ -8,7 +8,7 @@ OPT = -g -Wall
 ROOTLIBS = -L$(ROOTSYS)/lib -lCore -lTree -lMathCore -lRIO -lHist -lGpad
 
 all: 
-	$(MAKE) makePythia
+	$(MAKE) getPythia
 	$(MAKE) compile
 	$(MAKE) clean
 
