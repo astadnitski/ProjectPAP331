@@ -37,13 +37,14 @@ void gen(string channel) {
     Hist transverse("Transverse momentum", 100, 0., 100.);
     Hist pseudo("Pseudorapidity", 100, 0., 100.);
 
-    for (int i = 0; i < 100; i++) {
+    for (int i = 0; i < 1000; i++) {
 
         if (!pythia.next()) continue;
         int muon = 0;
         int antimuon = 0;
         for (int j = 0; j < pythia.event.size(); j++) if (pythia.event[j].id() == -13) muon = j;
         for (int k = 0; k < pythia.event.size(); k++) if (pythia.event[k].id() == 13) antimuon = k;
+        for (int l = 0; l < pythia.event.size(); l++) cout << i << " : " << pythia.event[l].id() << " : " << pythia.event[l].charge() << endl;
 
         float mu_pT = pythia.event[muon].pT();
         float mu_eta = pythia.event[muon].eta();
@@ -51,6 +52,7 @@ void gen(string channel) {
         float antimu_eta = pythia.event[antimuon].eta();
 
         // Plotting in Pythia output
+        // Save angles also
         transverse.fill(pythia.event[muon].pT());
         pseudo.fill(pythia.event[muon].eta());
 
@@ -86,7 +88,7 @@ void gen(string channel) {
 int main() {
     
     gen("HiggsSM:all"); // Signal (Higgs) 
-    //gen("WeakSingleBoson:ffbar2gmZ"); // Drell-Yan background 
+    //gen("WeakSingleBoson:ffbar2gmZ"); // Drell-Yan background // Maybe all?
     //gen("Top:gg2ttbar"); // ttbar background #0
     //gen("Top:qqbar2ttbar"); // ttbar background #1
 
