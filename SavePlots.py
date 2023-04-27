@@ -20,7 +20,7 @@ def makePlot(channel, particle, name):
     hist.GetXaxis().CenterTitle(True)
     hist.GetYaxis().SetRangeUser(0, 2500)
 
-    hist.SetStats(0)
+    #hist.SetStats(0)
     hist.Draw()
     canvas.Print('Plots/' + channel + name + '.png')
 

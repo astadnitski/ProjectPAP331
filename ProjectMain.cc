@@ -33,8 +33,10 @@ void gen(string channel, TFile *events) {
         pythia.readString("Top:qqbar2ttbar = on");
     }
 
-    pythia.readString("25:onMode = off");
-    pythia.readString("25:onIfMatch = -13 13");
+    if (!(strcmp(channel.c_str(), "HiggsSM:all"))) {
+        pythia.readString("25:onMode = off");
+        pythia.readString("25:onIfMatch = -13 13");
+    }
     pythia.readString("Next:numberShowEvent = 0");
 
     pythia.init();
@@ -96,7 +98,7 @@ void gen(string channel, TFile *events) {
                         Nmuonpassed++;
                         muon -> Fill();
                     //}
-                    
+
                 } 
 
             }
