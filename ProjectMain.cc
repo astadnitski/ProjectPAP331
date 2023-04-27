@@ -6,7 +6,7 @@
 using namespace Pythia8;
 using namespace std;
 
-#define Nevents 10000 //10000
+#define Nevents 10000
 
 // Can be simplified: return (condition AND condition AND condition)
 bool HLT_DoubleIsoMu20_eta2p1(float pT, float eta) {
@@ -51,17 +51,17 @@ void gen(string channel, TFile *events) {
     float mu_pT, mu_eta, mu_m, mu_charge, mu_phi;
     float antimu_pT, antimu_eta, antimu_m, antimu_charge, antimu_phi;
 
-    muon -> Branch("mu_pT", &mu_pT, "mu_pT/F");
-    muon -> Branch("mu_eta", &mu_eta, "mu_eta/F");
-    muon -> Branch("mu_m", &mu_m, "mu_m/F");
-    muon -> Branch("mu_charge", &mu_charge, "mu_charge/F"); 
-    muon -> Branch("mu_phi", &mu_phi, "mu_phi/F");
+    muon -> Branch("pT", &mu_pT, "pT/F");
+    muon -> Branch("eta", &mu_eta, "eta/F");
+    muon -> Branch("m", &mu_m, "m/F");
+    muon -> Branch("charge", &mu_charge, "charge/F"); 
+    muon -> Branch("phi", &mu_phi, "phi/F");
 
-    antimuon -> Branch("antimu_pT", &antimu_pT, "antimu_pT/F");
-    antimuon -> Branch("antimu_eta", &antimu_eta, "antimu_eta/F");
-    antimuon -> Branch("antimu_m", &antimu_m, "antimu_m/F");
-    antimuon -> Branch("antimu_charge", &antimu_charge, "antimu_charge/F");
-    antimuon -> Branch("antimu_phi", &antimu_phi, "antimu_phi/F");
+    antimuon -> Branch("pT", &antimu_pT, "pT/F");
+    antimuon -> Branch("eta", &antimu_eta, "eta/F");
+    antimuon -> Branch("m", &antimu_m, "m/F");
+    antimuon -> Branch("charge", &antimu_charge, "charge/F");
+    antimuon -> Branch("phi", &antimu_phi, "phi/F");
 
     float efficiency;
     int Nmuonpassed = 0, Nantimuonpassed = 0;
@@ -75,7 +75,9 @@ void gen(string channel, TFile *events) {
         isAntimuon = 0;
 
         for (int j = 0; j < pythia.event.size(); j++) {
+
             if (pythia.event[j].id() == -13) {
+
                 isMuon = j;
                 Nmuontotal++;
 
@@ -94,12 +96,13 @@ void gen(string channel, TFile *events) {
                         Nmuonpassed++;
                         muon -> Fill();
                     //}
+                    
                 } 
 
             }
 
-            else if (pythia.event[j].id() == 13)
-            {
+            else if (pythia.event[j].id() == 13) {
+
                 isAntimuon = j;
                 Nantimuontotal++;
 
@@ -118,6 +121,7 @@ void gen(string channel, TFile *events) {
                         Nantimuonpassed++;
                         antimuon -> Fill();
                     //}
+
                 } 
 
             }
@@ -127,17 +131,13 @@ void gen(string channel, TFile *events) {
         
     }
 
-    //int Ntotal = Nmuontotal + Nantimuontotal;
-    //int Npassed = Nmuonpassed + Nantimuonpassed;
-
-    efficiency = 100.0 * (Nmuonpassed + Nantimuonpassed) / (Nmuontotal + Nantimuontotal);
-
     /// STEP 3: PRINT AND SAVE DATA ///
 
     pythia.stat();
     cout << transverse;
     cout << pseudo;
 
+    efficiency = 100.0 * (Nmuonpassed + Nantimuonpassed) / (Nmuontotal + Nantimuontotal);
     cout << endl << "Efficiency: " << efficiency << "%" << endl;
 
     muon -> Write();
