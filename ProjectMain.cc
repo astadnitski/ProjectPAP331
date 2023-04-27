@@ -5,16 +5,19 @@
 using namespace Pythia8;
 using namespace std;
 
-#define Nevents 100
+#define Nevents 10000
 
-bool HLT_DoubleIsoMu20_eta2p1(float pT0, float eta0, float pT1, float eta1) {
-    if (pT0 <= 20 || pT1 <= 20) return false;
-    if (eta0 >= 2.1 || eta1 >= 2.1) return false;
-    if (eta0 <= -2.1 || eta1 <= -2.1) return false;
+bool HLT_DoubleIsoMu20_eta2p1(float pT, float eta) {
+    if (pT <= 20) return false;
+    if (eta >= 2.1) return false;
+    if (eta <= -2.1) return false;
     return true;
 }
 
-void gen(string channel, TFile *events, TTree *tree) {
+bool HLT_DoubleIsoMu30(float pT) { return pT >= 30;}
+
+
+void gen(string channel, TFile *events) {
 
     // Root initialization
 
@@ -38,81 +41,103 @@ void gen(string channel, TFile *events, TTree *tree) {
     Hist transverse("Transverse momentum", 100, 0., 100.);
     Hist pseudo("Pseudorapidity", 100, 0., 100.);
 
-<<<<<<< HEAD
-    for (int i = 0; i < 1000; i++) {
-=======
-    int muon, antimuon;
+    TTree* muon = new TTree("muon", "muon events generated with Pythia");
+    TTree* antimuon = new TTree("antimuon", "antimuon events generated with Pythia");
+
+    int isMuon, isAntimuon;
     float mu_pT, mu_eta, mu_m, mu_charge, mu_phi;
     float antimu_pT, antimu_eta, antimu_m, antimu_charge, antimu_phi;
 
-    tree -> Branch("mu_pT", &mu_pT, "mu_pT/F");
-    tree -> Branch("mu_eta", &mu_eta, "mu_eta/F");
-    tree -> Branch("mu_m", &mu_m, "mu_m/F");
-    tree -> Branch("mu_charge", &mu_charge, "mu_charge/F"); 
-    tree -> Branch("mu_phi", &mu_phi, "mu_phi/F");
+    muon -> Branch("mu_pT", &mu_pT, "mu_pT/F");
+    muon -> Branch("mu_eta", &mu_eta, "mu_eta/F");
+    muon -> Branch("mu_m", &mu_m, "mu_m/F");
+    muon -> Branch("mu_charge", &mu_charge, "mu_charge/F"); 
+    muon -> Branch("mu_phi", &mu_phi, "mu_phi/F");
 
-    tree -> Branch("antimu_pT", &antimu_pT, "antimu_pT/F");
-    tree -> Branch("antimu_eta", &antimu_eta, "antimu_eta/F");
-    tree -> Branch("antimu_m", &antimu_m, "antimu_m/F");
-    tree -> Branch("antimu_charge", &antimu_charge, "antimu_charge/F");
-    tree -> Branch("antimu_phi", &antimu_phi, "antimu_phi/F");
+    antimuon -> Branch("antimu_pT", &antimu_pT, "antimu_pT/F");
+    antimuon -> Branch("antimu_eta", &antimu_eta, "antimu_eta/F");
+    antimuon -> Branch("antimu_m", &antimu_m, "antimu_m/F");
+    antimuon -> Branch("antimu_charge", &antimu_charge, "antimu_charge/F");
+    antimuon -> Branch("antimu_phi", &antimu_phi, "antimu_phi/F");
 
-    float trigger_efficiency1, NmuonPassed = 0;
+    float trigger_efficiency1;
+    int Nmuonpassed = 0, Nantimuonpassed = 0;
+    int Nmuontotal = 0, Nantimuontotal = 0;
 
     for (int i = 0; i < Nevents; i++) {
->>>>>>> bd84d9dceef3398234d4122544773ad2919a75ba
 
         if (!pythia.next()) continue;
 
-        muon = 0;
-        antimuon = 0;
+        isMuon = 0;
+        isAntimuon = 0;
 
-        for (int j = 0; j < pythia.event.size(); j++) if (pythia.event[j].id() == -13) muon = j;
-        for (int k = 0; k < pythia.event.size(); k++) if (pythia.event[k].id() == 13) antimuon = k;
-        for (int l = 0; l < pythia.event.size(); l++) cout << i << " : " << pythia.event[l].id() << " : " << pythia.event[l].charge() << endl;
+        for (int j = 0; j < pythia.event.size(); j++)
+        {
+            if (pythia.event[j].id() == -13)
+            {
+                isMuon = j;
+                Nmuontotal++;
 
-        mu_pT = pythia.event[muon].pT();
-        mu_eta = pythia.event[muon].eta();
-    
-        // Plotting in Pythia output
-<<<<<<< HEAD
-        // Save angles also
-        transverse.fill(pythia.event[muon].pT());
-        pseudo.fill(pythia.event[muon].eta());
-=======
-        transverse.fill(mu_pT);
-        pseudo.fill(mu_eta);
->>>>>>> bd84d9dceef3398234d4122544773ad2919a75ba
+                mu_pT = pythia.event[isMuon].pT();
+                mu_eta = pythia.event[isMuon].eta();
 
-        cout << i << " : Mu- transverse momentum : " << mu_pT << endl;
-        cout << i << " : Mu- pseudorapidity : " << mu_eta << endl;
-            
-        antimu_pT = pythia.event[antimuon].pT();
-        antimu_eta = pythia.event[antimuon].eta();
+                transverse.fill(mu_pT);
+                pseudo.fill(mu_eta);
 
-        cout << i << " : Mu+ transverse momentum : " << antimu_pT << endl;
-        cout << i << " : Mu+ pseudorapidity : " << antimu_eta << endl;
+                 if (HLT_DoubleIsoMu20_eta2p1(mu_pT, mu_eta)) 
+                 {
+                    // if (HLT_DoubleIsoMu30(mu_pT)) 
+                    // {
+                        mu_m = pythia.event[isMuon].m();
+                        mu_charge = pythia.event[isMuon].charge();
+                        mu_phi = pythia.event[isMuon].phi();
 
-        if (HLT_DoubleIsoMu20_eta2p1(mu_pT, mu_eta, antimu_pT, antimu_eta)) {
-            if (mu_pT > 30 && antimu_pT > 30) {
-                mu_m = pythia.event[muon].m();
-                mu_charge = pythia.event[muon].charge();
-                mu_phi = pythia.event[muon].phi();
+                        Nmuonpassed++;
 
-                antimu_m = pythia.event[antimuon].m();
-                antimu_charge = pythia.event[antimuon].charge();
-                antimu_phi = pythia.event[antimuon].phi();
+                        muon -> Fill();
+                    // }
+                } 
 
-                NmuonPassed++;
-
-                tree -> Fill();
             }
-        } 
-        //else cout << "No" << endl;
+
+            else if (pythia.event[j].id() == 13)
+            {
+                isAntimuon = j;
+                Nantimuontotal++;
+
+                antimu_pT = pythia.event[isAntimuon].pT();
+                antimu_eta = pythia.event[isAntimuon].eta();
+
+                transverse.fill(antimu_pT);
+                pseudo.fill(antimu_eta);
+                 
+                 if (HLT_DoubleIsoMu20_eta2p1(antimu_pT, antimu_eta)) 
+                 {
+                    // if (HLT_DoubleIsoMu30(antimu_pT)) 
+                    // {
+
+                        antimu_m = pythia.event[isAntimuon].m();
+                        antimu_charge = pythia.event[isAntimuon].charge();
+                        antimu_phi = pythia.event[isAntimuon].phi();
+
+                        Nantimuonpassed++;
+
+                        antimuon -> Fill();
+                    // }
+                } 
+
+            }
+
+            else continue;
+        }
+        
         cout << endl;
     }
 
-    trigger_efficiency1 = 100.0*NmuonPassed/Nevents;
+    int Ntotal = Nmuontotal + Nantimuontotal;
+    int Npassed = Nmuonpassed + Nantimuonpassed;
+
+    trigger_efficiency1 = 100.0*Npassed/Ntotal;
 
     /// STEP 3: PRINT AND SAVE DATA ///
 
@@ -122,31 +147,29 @@ void gen(string channel, TFile *events, TTree *tree) {
 
     cout << endl << "trigger_efficiency = " << trigger_efficiency1 << "%" << endl;
 
-    tree -> Write();
+    muon -> Write();
+    antimuon -> Write();
 
     events -> Close();
     //exit(0);
 }
 
 int main() {
-<<<<<<< HEAD
-    
-    gen("HiggsSM:all"); // Signal (Higgs) 
-    //gen("WeakSingleBoson:ffbar2gmZ"); // Drell-Yan background // Maybe all?
-    //gen("Top:gg2ttbar"); // ttbar background #0
-=======
 
-    TFile* events = TFile::Open("events_test.root", "RECREATE");
+    // TFile* events = TFile::Open("events_test.root", "RECREATE");
 
-    TTree* signal = new TTree("signal", "Signal events generated with Pythia");
-    TTree* DrellYan = new TTree("DrellYan", "Drell-Yan background events generated with Pythia");
-    TTree* ttbar = new TTree("ttbar", "Ttbar background  generated with Pythia");
+    // TTree* signal = new TTree("signal", "Signal events generated with Pythia");
+    // TTree* DrellYan = new TTree("DrellYan", "Drell-Yan background events generated with Pythia");
+    // TTree* ttbar = new TTree("ttbar", "Ttbar background  generated with Pythia");
 
-    gen("HiggsSM:all", events, signal); // Signal (Higgs) 
+    TFile* signal = TFile::Open("signal.root", "RECREATE");
+    //TFile* DrellYan = TFile::Open("DrellYan.root", "RECREATE");
+    //TFile* ttbar = TFile::Open("ttbar.root", "RECREATE");
+
+    gen("HiggsSM:all", signal); // Signal (Higgs) 
     //gen("WeakSingleBoson:ffbar2gmZ", events, DrellYan); // Drell-Yan background 
     //gen("Top:gg2ttbar", events, ttbar); // ttbar background #0
 
->>>>>>> bd84d9dceef3398234d4122544773ad2919a75ba
     //gen("Top:qqbar2ttbar"); // ttbar background #1
 
     return 0;
