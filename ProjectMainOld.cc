@@ -31,12 +31,12 @@ void gen(string channel, TFile *events) {
     if (!(strcmp(channel.c_str(), "Top:gg2ttbar"))) {
         cout << "Compared, setting Top:qqbar2ttbar = on" << endl;
         pythia.readString("Top:qqbar2ttbar = on");
-    }
+    } // Can be also Top ttbar all: on (last question: how to improve the analysis)
 
     if (!(strcmp(channel.c_str(), "HiggsSM:all"))) {
         pythia.readString("25:onMode = off");
         pythia.readString("25:onIfMatch = -13 13");
-    }
+    } // Elif DrellYan: limit phase space to above 80 GeV
     pythia.readString("Next:numberShowEvent = 0");
 
     pythia.init();
@@ -169,3 +169,26 @@ int main() {
 - селекшн 30
 - зробити лаб 11, 12
 */
+
+// Delta R = sqrt((Delta phi)^2 + (Delta eta)^2) 
+// TLorentzVector makes sure that phi_1 - phi_2 is in the allowed range
+// This method is in Root: can use Root functions
+
+// For part 2: save event ID and also make a tree for charged pions for that event
+
+// Instead of using 2 trees, use 1 tree with different branches
+
+// Efficiency should be (N passing HLT) / (All e.g. 10000)
+
+// For invariant mass: use TLorentzVector & add up
+
+// Consider config files for portability
+
+// Problem 3
+// Why wouldn't believe us?
+// Statistical significance: check sigma
+// Only some backgrounds on, most ignored
+// Not detector simulation - can't be compared to actual detector data
+// Optimize selection
+
+// Normalization requires cross section (sigma) and integrated luminosity

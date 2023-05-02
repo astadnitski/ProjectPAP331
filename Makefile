@@ -9,8 +9,9 @@ ROOTLIBS = -L$(ROOTSYS)/lib -lCore -lTree -lMathCore -lRIO -lHist -lGpad
 
 all: 
 	$(MAKE) getPythia
-	$(MAKE) compile
-	$(MAKE) clean
+	$(MAKE) simulate
+	#$(MAKE) analyze
+	#$(MAKE) clean
 
 getPythia:
 	@if [ -d "./pythia8307" ]; then echo "Pythia already installed"; else $(MAKE) getPythia0; fi
@@ -21,11 +22,16 @@ getPythia0:
 	cd $(PYTHIA8_DIR) && ./configure && make
 	@echo Installed Pythia
 
-compile:
-	@$(CXX) $(OPT) $(INC) ProjectMain.cc $(LIB) $(ROOTLIBS) -o simulate.exe
+analyze:
+	@$(CXX) $(OPT) $(INC) Analysis.cc $(LIB) $(ROOTLIBS) -o analyze.exe
+	@echo Compiled, running job script	
+	@./analyze.job
+
+simulate:
+	@$(CXX) $(OPT) $(INC) Simulation.cc $(LIB) $(ROOTLIBS) -o simulate.exe
 	@echo Compiled, running job script	
 	@./simulate.job
 
 clean:
-	rm -rf $(wildcard *~ *.tgz *.txt *.exe)
+	rm -rf $(wildcard *~ *.tgz *.exe)
 	@echo State reset

@@ -2,5 +2,5 @@
 setenv PYTHIA8DATA $PWD/pythia8307/share/Pythia8/xmldoc
 setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:$PWD/pythia8307/lib
 
-./simulate.exe > outputS.txt
-echo Finished writing output to file output
+./analyze.exe > outputA.txt
+echo Finished writing output to file
