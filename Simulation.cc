@@ -54,6 +54,7 @@ void simulate(string channel, int N) {
     muons -> Branch("mass", &mu_m, "mass/F");
 
     float pi_pT, pi_eta, pi_phi;
+    pions -> Branch("Event", &eventID, "Event/I");
     pions -> Branch("pT", &pi_pT, "pT/F");
     pions -> Branch("eta", &pi_eta, "eta/F");
     pions -> Branch("phi", &pi_phi, "phi/F");
