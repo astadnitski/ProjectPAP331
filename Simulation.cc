@@ -11,7 +11,7 @@ float HLT_DoubleIsoMu30(float pT) { return pT >= 30; }
 
 void simulate(string channel, int N) {
 
-    TFile* file = TFile::Open(("Root/" + channel + ".root").c_str(), "RECREATE");
+    TFile* file = TFile::Open(("Root/Level0/" + channel + ".root").c_str(), "RECREATE");
     Pythia pythia;
 
     if (!(strcmp(channel.c_str(), "signal"))) {
@@ -41,22 +41,22 @@ void simulate(string channel, int N) {
 
     TTree* muons = new TTree("Muons", "Analysis of Higgs decay to muons");
     TTree* pions = new TTree("Pions", "Tracking pions to calculate isolation");
-    float eventID, trigger;
     
-    muons -> Branch("Event", &eventID, "Event/F");
-    muons -> Branch("IsoMu20_eta2p1", &trigger, "IsoMu20_eta2p1/F");
+    int eventID, trigger;
+    muons -> Branch("Event", &eventID, "Event/I");
+    muons -> Branch("IsoMu20_eta2p1", &trigger, "IsoMu20_eta2p1/I");
 
     float mu_pT, mu_eta, mu_q, mu_phi, mu_m;
-    muons -> Branch("Muon_pT", &mu_pT, "Muon_pT/F");
-    muons -> Branch("Muon_eta", &mu_eta, "Muon_eta/F");
-    muons -> Branch("Muon_charge", &mu_q, "Muon_charge/F");
-    muons -> Branch("Muon_phi", &mu_phi, "Muon_phi/F");
-    muons -> Branch("Muon_mass", &mu_m, "Muon_mass/F");
+    muons -> Branch("pT", &mu_pT, "pT/F");
+    muons -> Branch("eta", &mu_eta, "eta/F");
+    muons -> Branch("charge", &mu_q, "charge/F");
+    muons -> Branch("phi", &mu_phi, "phi/F");
+    muons -> Branch("mass", &mu_m, "mass/F");
 
     float pi_pT, pi_eta, pi_phi;
-    pions -> Branch("Pion_pT", &pi_pT, "Pion_pT/F");
-    pions -> Branch("Pion_eta", &pi_eta, "Pion_eta/F");
-    pions -> Branch("Pion_phi", &pi_phi, "Pion_phi/F");
+    pions -> Branch("pT", &pi_pT, "pT/F");
+    pions -> Branch("eta", &pi_eta, "eta/F");
+    pions -> Branch("phi", &pi_phi, "phi/F");
 
     float accepted = 0.;
 
