@@ -4,8 +4,9 @@ from array import array
 from ROOT import *
 import numpy as np
 
-def smear(input):
-    return input * np.random.normal(0, 0.2, 1)[0] # Mean, standard deviation, length of output array
+def smear():
+    rng = np.random.normal(0, 0.2, 3)
+    return 0.01 * rng[0], 0.002 * rng[1], 0.002 * rng[2]
     # https://www.desmos.com/calculator/oj6mh6anxe
 
 def filter0(channel):
@@ -39,8 +40,11 @@ def filter0(channel):
     mu_theta = array('f', [0])
     Muons_F.Branch('theta', mu_theta, 'theta/F')
 
+    mu_m = array('f', [0])
+    Muons_F.Branch('m', mu_m, 'm/F')
+
     # This is just for helping to visualize stuff by printing arrays, will be removed later.
-    ar = np.zeros([Muons.GetEntries(), 7]) # Could be also [, 6] if we throw out trigger flag
+    ar = np.zeros([Muons.GetEntries(), 8]) # Could be also [, 7] if we throw out trigger flag
     
     trigger = [0] * 1000
 
@@ -60,7 +64,7 @@ def filter0(channel):
             mu_theta[0] = muon.theta
             Muons_F.Fill()
 
-            ar[i] = [muon.Event, True, muon.pT, muon.eta, muon.charge, muon.phi, muon.theta]
+            ar[i] = [muon.Event, True, muon.pT, muon.eta, muon.charge, muon.phi, muon.theta, muon.m]
 
     for pion in Pions:
 
@@ -80,12 +84,6 @@ def filter0(channel):
     print 'Completed level 1 filtering of ' + channel
 
 def filter1(channel):
-
-    print
-    print 'This function will perform the following operations on ' + channel + ':'
-    print 'Apply Gaussian blur: smear()'
-    print 'Select muons with pT > 30'
-    print 'Select muons with good isolation'
 
     FILE = TFile.Open(('Root/Level1/' + channel + '.root'), 'READ')
     Muons, Pions = FILE.Get('Muons'), FILE.Get('Pions')
@@ -111,28 +109,43 @@ def filter1(channel):
     mu_theta = array('f', [0])
     Muons_F.Branch('theta', mu_theta, 'theta/F')
 
+    mu_m = array('f', [0])
+    Muons_F.Branch('m', mu_m, 'm/F')
+
     np.random.seed(3)
     for i, muon in enumerate(Muons):
-        print str(muon.pT) + str(muon.phi) + str(muon.pT)
-        #print str(muon.Event) + ' | ' + str(muon.pT) + ' | ' + str(smear(muon.pT)) 
+        
+        dpT, dphi, dtheta = smear()
+
         Event[0] = muon.Event
-        mu_pT[0] = muon.pT + smear(muon.pT)
+        mu_pT[0] = muon.pT + dpT
         mu_eta[0] = muon.eta
         mu_charge[0] = muon.charge
-        mu_phi[0] = muon.phi
-        mu_theta[0] = muon.theta
+        mu_phi[0] = muon.phi + dphi
+        mu_theta[0] = muon.theta + dtheta
+        mu_m[0] = muon.m
         Muons_F.Fill()
+
+        #print
+        #print str(muon.Event) + ' | ' + str(muon.pT) + ' | ' + str(dpT)
+        #print str(muon.Event) + ' | ' + str(muon.phi) + ' | ' + str(dphi)
+        #print str(muon.Event) + ' | ' + str(muon.theta) + ' | ' + str(dtheta)         
 
     FILE.Close()
     Muons_F.Write()
     FILE_F.Close()
 
+    print 'Level 2 filtering of ' + channel + ': applied smear. Still need to select by momentum and isolation'
+
 def main():
         
     filter0('signal')
-    #filter0('drellyan')
-    #filter0('ttbar')
+    filter0('drellyan')
+    filter0('ttbar')
 
-    #filter1('signal') # Currently only smears momentum, does nothing to angles
+    # Currently does step 1: smear. No further selection
+    filter1('signal')
+    filter1('drellyan')
+    filter1('ttbar') 
 
 if __name__ == '__main__': main()

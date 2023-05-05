@@ -45,12 +45,13 @@ void simulate(string channel, int N) {
     muons -> Branch("Event", &eventID, "Event/I");
     muons -> Branch("IsoMu20_eta2p1", &trigger, "IsoMu20_eta2p1/I");
 
-    float mu_pT, mu_eta, mu_q, mu_phi, mu_theta;
+    float mu_pT, mu_eta, mu_q, mu_phi, mu_theta, mu_m;
     muons -> Branch("pT", &mu_pT, "pT/F");
     muons -> Branch("eta", &mu_eta, "eta/F");
     muons -> Branch("charge", &mu_q, "charge/F");
     muons -> Branch("phi", &mu_phi, "phi/F");
     muons -> Branch("theta", &mu_theta, "theta/F");
+    muons -> Branch("m", &mu_m, "m/F");
 
     float pi_pT, pi_eta, pi_phi;
     pions -> Branch("Event", &eventID, "Event/I");
@@ -64,16 +65,15 @@ void simulate(string channel, int N) {
 
         if (!pythia.next()) continue;
 
-        cout << endl;
-        cout << "Loop iteration " << i << endl;
+        //cout << endl;
+        //cout << "Loop iteration " << i << endl;
+        
         int check = 0;
 
         for (int j = 0; j < pythia.event.size(); j++) {
 
             if (pythia.event[j].id() == 13 || pythia.event[j].id() == -13) {
             
-                //cout << "Observed muon in event " << i << " with ID " << pythia.event[j].id() << endl;
-                
                 eventID = i;
 
                 mu_pT = pythia.event[j].pT();
@@ -81,15 +81,14 @@ void simulate(string channel, int N) {
                 mu_q = pythia.event[j].charge();
                 mu_phi = pythia.event[j].phi();
                 mu_theta = pythia.event[j].theta();
-
-                //cout << "Muon with eta " << mu_eta << " gives theta " << 2 * atan(exp(-1 * mu_eta)) << endl;
-                cout << mu_theta << endl;
+                mu_m = pythia.event[j].m();
+                muons -> Fill();
 
                 trigger = HLT_DoubleIsoMu20_eta2p1(mu_pT, mu_eta);
-                //if (trigger) { cout << "This particle passed the trigger: " << trigger << endl; }
                 check += trigger;
 
-                muons -> Fill();
+                //cout << "Observed muon in event " << i << " with ID " << pythia.event[j].id() << endl;
+                //if (trigger) { cout << "This particle passed the trigger: " << trigger << endl; }
 
             }
 
@@ -107,15 +106,9 @@ void simulate(string channel, int N) {
             
         }
 
-        // This stuff with check should be moved to Analysis.cc?
-        //cout << "Amount of muons passing the trigger: " << check << endl;
         if (check > 1) { accepted++; }
         
     }
-
-    cout << endl;
-    cout << "First pseudorapidity:" << endl;
-    cout << endl;
 
     cout << "Efficiency: " << accepted / N << endl;
     muons -> Write();
@@ -126,7 +119,7 @@ void simulate(string channel, int N) {
 
 int main() {
     simulate("signal", 1000);
-    //simulate("drellyan", 1000);
-    //simulate("ttbar", 1000);
+    simulate("drellyan", 1000);
+    simulate("ttbar", 1000);
     return 0;
 }
