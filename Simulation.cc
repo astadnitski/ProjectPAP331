@@ -7,7 +7,6 @@ using namespace Pythia8;
 using namespace std;
 
 float HLT_DoubleIsoMu20_eta2p1(float pT, float eta) { return pT >= 20 && eta >= -2.1 && eta <= 2.1; }
-float HLT_DoubleIsoMu30(float pT) { return pT >= 30; }
 
 void simulate(string channel, int N) {
 
@@ -46,12 +45,12 @@ void simulate(string channel, int N) {
     muons -> Branch("Event", &eventID, "Event/I");
     muons -> Branch("IsoMu20_eta2p1", &trigger, "IsoMu20_eta2p1/I");
 
-    float mu_pT, mu_eta, mu_q, mu_phi, mu_m;
+    float mu_pT, mu_eta, mu_q, mu_phi, mu_theta;
     muons -> Branch("pT", &mu_pT, "pT/F");
     muons -> Branch("eta", &mu_eta, "eta/F");
     muons -> Branch("charge", &mu_q, "charge/F");
     muons -> Branch("phi", &mu_phi, "phi/F");
-    muons -> Branch("mass", &mu_m, "mass/F");
+    muons -> Branch("theta", &mu_theta, "theta/F");
 
     float pi_pT, pi_eta, pi_phi;
     pions -> Branch("Event", &eventID, "Event/I");
@@ -73,7 +72,7 @@ void simulate(string channel, int N) {
 
             if (pythia.event[j].id() == 13 || pythia.event[j].id() == -13) {
             
-                cout << "Observed muon in event " << i << " with ID " << pythia.event[j].id() << endl;
+                //cout << "Observed muon in event " << i << " with ID " << pythia.event[j].id() << endl;
                 
                 eventID = i;
 
@@ -81,10 +80,13 @@ void simulate(string channel, int N) {
                 mu_eta = pythia.event[j].eta();
                 mu_q = pythia.event[j].charge();
                 mu_phi = pythia.event[j].phi();
-                mu_m = pythia.event[j].m();
+                mu_theta = pythia.event[j].theta();
+
+                //cout << "Muon with eta " << mu_eta << " gives theta " << 2 * atan(exp(-1 * mu_eta)) << endl;
+                cout << mu_theta << endl;
 
                 trigger = HLT_DoubleIsoMu20_eta2p1(mu_pT, mu_eta);
-                if (trigger) { cout << "This particle passed the trigger: " << trigger << endl; }
+                //if (trigger) { cout << "This particle passed the trigger: " << trigger << endl; }
                 check += trigger;
 
                 muons -> Fill();
@@ -111,6 +113,10 @@ void simulate(string channel, int N) {
         
     }
 
+    cout << endl;
+    cout << "First pseudorapidity:" << endl;
+    cout << endl;
+
     cout << "Efficiency: " << accepted / N << endl;
     muons -> Write();
     pions -> Write();
@@ -120,7 +126,7 @@ void simulate(string channel, int N) {
 
 int main() {
     simulate("signal", 1000);
-    simulate("drellyan", 1000);
-    simulate("ttbar", 1000);
+    //simulate("drellyan", 1000);
+    //simulate("ttbar", 1000);
     return 0;
 }
