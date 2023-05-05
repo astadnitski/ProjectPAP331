@@ -4,11 +4,6 @@ from array import array
 from ROOT import *
 import numpy as np
 
-def smear():
-    rng = np.random.normal(0, 0.2, 3)
-    return 0.01 * rng[0], 0.002 * rng[1], 0.002 * rng[2]
-    # https://www.desmos.com/calculator/oj6mh6anxe
-
 def filter0(channel):
 
     FILE = TFile.Open(('Root/Level0/' + channel + '.root'), 'READ')
@@ -44,7 +39,7 @@ def filter0(channel):
     Muons_F.Branch('m', mu_m, 'm/F')
 
     # This is just for helping to visualize stuff by printing arrays, will be removed later.
-    ar = np.zeros([Muons.GetEntries(), 8]) # Could be also [, 7] if we throw out trigger flag
+    #ar = np.zeros([Muons.GetEntries(), 8]) # Could be also [, 7] if we throw out trigger flag
     
     trigger = [0] * 1000
 
@@ -53,9 +48,7 @@ def filter0(channel):
             trigger[muon.Event] += 1
 
     for i, muon in enumerate(Muons):
-
         if trigger[muon.Event] > 1:
-
             Event[0] = muon.Event
             mu_pT[0] = muon.pT
             mu_eta[0] = muon.eta
@@ -63,8 +56,7 @@ def filter0(channel):
             mu_phi[0] = muon.phi
             mu_theta[0] = muon.theta
             Muons_F.Fill()
-
-            ar[i] = [muon.Event, True, muon.pT, muon.eta, muon.charge, muon.phi, muon.theta, muon.m]
+            #ar[i] = [muon.Event, True, muon.pT, muon.eta, muon.charge, muon.phi, muon.theta, muon.m]
 
     for pion in Pions:
 
@@ -83,10 +75,10 @@ def filter0(channel):
 
     print 'Completed level 1 filtering of ' + channel
 
-def filter1(channel):
+def smear(channel):
 
     FILE = TFile.Open(('Root/Level1/' + channel + '.root'), 'READ')
-    Muons, Pions = FILE.Get('Muons'), FILE.Get('Pions')
+    Muons = FILE.Get('Muons')
     
     FILE_F = TFile.Open(('Root/Level2/' + channel + '.root'), 'RECREATE')
     Muons_F = TTree('Muons', 'Muons passing the second set of triggers')
@@ -115,14 +107,15 @@ def filter1(channel):
     np.random.seed(3)
     for i, muon in enumerate(Muons):
         
-        dpT, dphi, dtheta = smear()
+        # https://www.desmos.com/calculator/oj6mh6anxe
+        rng = np.random.normal(0, 0.2, 3)
 
         Event[0] = muon.Event
-        mu_pT[0] = muon.pT + dpT
-        mu_eta[0] = muon.eta
+        mu_pT[0] = muon.pT + 0.01 * rng[0]
+        mu_phi[0] = muon.phi + 0.002 * rng[1]
+        mu_theta[0] = muon.theta + 0.002 * rng[2]
+        mu_eta[0] = -1 * np.log(np.tan((mu_theta[0] / 2)))          ### CHECK THAT THIS IS CORRECT
         mu_charge[0] = muon.charge
-        mu_phi[0] = muon.phi + dphi
-        mu_theta[0] = muon.theta + dtheta
         mu_m[0] = muon.m
         Muons_F.Fill()
 
@@ -135,7 +128,30 @@ def filter1(channel):
     Muons_F.Write()
     FILE_F.Close()
 
+def trigger30(channel):
+
+    FILE = TFile.Open(('Root/Level2/' + channel + '.root'), 'READ')
+    Muons = FILE.Get('Muons')
+
+    FILE.Close() 
+    print 'Function not implemented yet: trigger30'
+
+def isolate(channel):
+
+    FILE = TFile.Open(('Root/Level2/' + channel + '.root'), 'READ')
+    Muons = FILE.Get('Muons')
+    Pions = TFile.Open(('Root/Level1/' + channel + '.root'), 'READ').Get('Pions')
+    
+    FILE.Close()
+    print 'Function not implemented yet: isolate'
+
+def filter1(channel):
+
     print 'Level 2 filtering of ' + channel + ': applied smear. Still need to select by momentum and isolation'
+
+    smear(channel)
+    trigger30(channel)
+    isolate(channel)
 
 def main():
         
@@ -143,7 +159,6 @@ def main():
     filter0('drellyan')
     filter0('ttbar')
 
-    # Currently does step 1: smear. No further selection
     filter1('signal')
     filter1('drellyan')
     filter1('ttbar') 
