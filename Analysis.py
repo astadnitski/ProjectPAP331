@@ -56,6 +56,7 @@ def filter0(channel):
             mu_charge[0] = muon.charge
             mu_phi[0] = muon.phi
             mu_theta[0] = muon.theta
+            mu_m[0] = muon.m
             Muons_F.Fill()
             #ar[i] = [muon.Event, True, muon.pT, muon.eta, muon.charge, muon.phi, muon.theta, muon.m]
 
@@ -73,7 +74,7 @@ def filter0(channel):
     Pions_F.Write()
     FILE_F.Close()
 
-    print 'Completed level 1 filtering of ' + channel
+    print('Completed level 1 filtering of ' + channel)
 
 def smear(channel):
 
@@ -120,9 +121,9 @@ def smear(channel):
         Muons_F.Fill()
 
         #print
-        #print str(muon.Event) + ' | ' + str(muon.pT) + ' | ' + str(dpT)
-        #print str(muon.Event) + ' | ' + str(muon.phi) + ' | ' + str(dphi)
-        #print str(muon.Event) + ' | ' + str(muon.theta) + ' | ' + str(dtheta)         
+        #print(str(muon.Event) + ' | ' + str(muon.pT) + ' | ' + str(dpT))
+        #print(str(muon.Event) + ' | ' + str(muon.phi) + ' | ' + str(dphi))
+        #print(str(muon.Event) + ' | ' + str(muon.theta) + ' | ' + str(dtheta))         
 
     FILE.Close()
     Muons_F.Write()
@@ -134,7 +135,7 @@ def trigger30(channel):
     Muons = FILE.Get('Muons')
 
     FILE.Close() 
-    print 'Function not implemented yet: trigger30'
+    print('Function not implemented yet: trigger30')
 
 def isolate(channel):
 
@@ -143,15 +144,15 @@ def isolate(channel):
     Pions = TFile.Open(('Root/Level1/' + channel + '.root'), 'READ').Get('Pions')
     
     FILE.Close()
-    print 'Function not implemented yet: isolate'
+    print('Function not implemented yet: isolate')
 
-def filter1(channel):
+#def filter1(channel):
 
-    print 'Level 2 filtering of ' + channel + ': applied smear. Still need to select by momentum and isolation'
+    #print('Level 2 filtering of ' + channel + ': applied smear. Still need to select by momentum and isolation')
 
-    smear(channel)
-    trigger30(channel)
-    isolate(channel)
+    #smear(channel)
+    #trigger30(channel)
+    #isolate(channel)
 
 def main():
         
@@ -159,8 +160,8 @@ def main():
     filter0('drellyan')
     filter0('ttbar')
 
-    filter1('signal')
-    filter1('drellyan')
-    filter1('ttbar') 
+    #filter1('signal')
+    #filter1('drellyan')
+    #filter1('ttbar') 
 
 if __name__ == '__main__': main()
