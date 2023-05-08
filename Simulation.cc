@@ -53,11 +53,12 @@ void simulate(string channel, int N) {
     muons -> Branch("theta", &mu_theta, "theta/F");
     muons -> Branch("m", &mu_m, "m/F");
 
-    float pi_pT, pi_eta, pi_phi;
+    float pi_pT, pi_eta, pi_phi, pi_m;
     pions -> Branch("Event", &eventID, "Event/I");
     pions -> Branch("pT", &pi_pT, "pT/F");
     pions -> Branch("eta", &pi_eta, "eta/F");
     pions -> Branch("phi", &pi_phi, "phi/F");
+    pions -> Branch("m", &pi_m, "m/F");
 
     float accepted = 0.;
 
@@ -99,6 +100,7 @@ void simulate(string channel, int N) {
                 pi_pT = pythia.event[j].pT();
                 pi_eta = pythia.event[j].eta();
                 pi_phi = pythia.event[j].phi();
+                pi_m = pythia.event[j].m();
 
                 pions -> Fill();
 
@@ -110,6 +112,10 @@ void simulate(string channel, int N) {
         
     }
 
+    float xsec = 1e9 * pythia.info.sigmaGen(); // [mb]
+    int lumi = 30; // [fb^(-1)]
+    float norm = 1e12 * xsec * lumi / N;
+    cout << channel << " normalization: " << norm << " units?" << endl;
     cout << "Efficiency: " << accepted / N << endl;
     muons -> Write();
     pions -> Write();

@@ -35,8 +35,9 @@ def filter0(channel):
     mu_theta = array('f', [0])
     Muons_F.Branch('theta', mu_theta, 'theta/F')
 
-    mu_m = array('f', [0])
+    mu_m, pi_m = array('f', [0]), array('f', [0])
     Muons_F.Branch('m', mu_m, 'm/F')
+    Pions_F.Branch('m', pi_m, 'm/F')
 
     # This is just for helping to visualize stuff by printing arrays, will be removed later.
     #ar = np.zeros([Muons.GetEntries(), 8]) # Could be also [, 7] if we throw out trigger flag
@@ -47,7 +48,7 @@ def filter0(channel):
         if muon.IsoMu20_eta2p1:
             trigger[muon.Event] += 1
 
-    for i, muon in enumerate(Muons):
+    for muon in Muons:
         if trigger[muon.Event] > 1:
             Event[0] = muon.Event
             mu_pT[0] = muon.pT
@@ -59,13 +60,12 @@ def filter0(channel):
             #ar[i] = [muon.Event, True, muon.pT, muon.eta, muon.charge, muon.phi, muon.theta, muon.m]
 
     for pion in Pions:
-
         if trigger[pion.Event] > 1:
-
             Event[0] = pion.Event
             pi_pT[0] = pion.pT
             pi_eta[0] = pion.eta
             pi_phi[0] = pion.phi
+            pi_m[0] = pion.m
             Pions_F.Fill()
 
     FILE.Close()
