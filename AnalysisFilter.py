@@ -6,6 +6,14 @@ import numpy as np
 
 def filtering(channel):
 
+    AllEvents = 0
+    FILE0 = TFile.Open(('Root/Level0/' + channel + '.root'), 'READ')
+    AllMuons = FILE0.Get('Muons')
+    for i, muon in enumerate(AllMuons):
+        if muon.Event+1 > AllEvents:
+            AllEvents = muon.Event+1
+    FILE0.Close()
+
     FILE = TFile.Open(('Root/Level1/' + channel + '.root'), 'READ')
     Muons = FILE.Get('Muons')
     Pions = FILE.Get('Pions')
@@ -73,12 +81,18 @@ def filtering(channel):
     finish = temp[-1][0]    
     filtered = []
     
-    for i in range(finish): #Filtering all the events that have >1 muons and have even number of muons
+    for i in range(finish): #Filtering all the events that have >1 muons and have at least one antimuon and muon
         temp2 = []
+        mutrigger = 0
+        antimutrigger = 0
         for particle in temp:
             if particle[0] == i:
                 temp2.append(particle)
-        if len(temp2) > 1 and len(temp2)%2 == 0:
+                if particle[5] == 1.0:
+                    mutrigger += 1
+                elif particle[5] == -1.0:
+                    antimutrigger += 1
+        if mutrigger > 0 and antimutrigger > 0:
             filtered.append(temp2)
             #print(temp2)
             
@@ -97,6 +111,8 @@ def filtering(channel):
     Muons_F.Write()
     FILE_F.Close()
     #print(filtered)
+    print("The number of events passing the trigger for", channel, "is:", len(filtered)) 
+    print("The trigger efficiency for", channel, "is:", len(filtered)/AllEvents)
     
 def main():
 
