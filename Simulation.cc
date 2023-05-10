@@ -112,10 +112,11 @@ void simulate(string channel, int N) {
         
     }
 
-    float xsec = 1e9 * pythia.info.sigmaGen(); // [mb]
-    int lumi = 30; // [fb^(-1)]
-    float norm = 1e12 * xsec * lumi / N;
+    float xsec = pythia.info.sigmaGen(); // [mb]
+    int lumi = 300; // [fb^(-1)]
+    float norm = 1e12 * xsec * lumi / N; // Pythia automatically weights by branching ratio
     cout << channel << " normalization: " << norm << " units?" << endl;
+    cout << channel << " xsec: " << xsec * 1e9 << " picobarn" << endl;
     cout << "Efficiency: " << accepted / N << endl;
     muons -> Write();
     pions -> Write();
