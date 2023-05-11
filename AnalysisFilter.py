@@ -128,11 +128,11 @@ def filter1(channel):
         Event_number = muon.Event
         muonpT = muon.pT + 0.01 * rng[0]
         muonphi = muon.phi + 0.002 * rng[1]
-        muontheta = muon.theta + 0.002 * rng[2]
-        try:
-            muoneta = -1 * np.log(np.tan((muontheta / 2)))        ### CHECK THAT THIS IS CORRECT
-        except:
-            print(muontheta,muoneta)
+        if muon.theta + 0.002 * rng[2] > 0:
+            muontheta = muon.theta + 0.002 * rng[2]
+        else:
+            muontheta = muon.theta
+        muoneta = -1 * np.log(np.tan((muontheta / 2)))        ### CHECK THAT THIS IS CORRECT
         muoncharge = muon.charge
         muonm = muon.m
         muons.append([Event_number, muonpT, muoneta, muonphi, muonm, muoncharge, muontheta])
