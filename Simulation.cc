@@ -114,10 +114,24 @@ void simulate(string channel, int N) {
 
     float xsec = pythia.info.sigmaGen(); // [mb]
     int lumi = 300; // [fb^(-1)]
-    float norm = 1e12 * xsec * lumi / N; // Pythia automatically weights by branching ratio
-    cout << channel << " normalization: " << norm << " units?" << endl;
-    cout << channel << " xsec: " << xsec * 1e9 << " picobarn" << endl;
-    cout << "Efficiency: " << accepted / N << endl;
+    string norm = to_string(1e12 * xsec * lumi / N); // Pythia automatically weights by branching ratio
+
+    //cout << channel << " normalization: " << 1e12 * xsec * lumi / N << endl;
+    //cout << channel << " normalization to_string: " << norm << endl;
+    //cout << channel << " xsec: " << xsec * 1e9 << " picobarn" << endl;
+    //cout << "Efficiency: " << accepted / N << endl;
+
+    string eff = to_string(accepted / N);
+
+    TNamed* efficiency = new TNamed("Efficiency", eff);
+    TNamed* normalization = new TNamed("Normalization", norm);
+
+    //efficiency -> SetTitle(dtostrf(accepted / N))
+    efficiency -> Write();
+
+    //normalization -> SetTitle(dtostrf(norm))
+    normalization -> Write();
+
     muons -> Write();
     pions -> Write();
     file -> Close();

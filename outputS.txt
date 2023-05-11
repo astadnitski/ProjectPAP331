@@ -8,7 +8,7 @@
  |  |   P  P   Y Y     T    H   H   I    A A     This is PYTHIA version 8.307      |  | 
  |  |   PPP     Y      T    HHHHH   I   AAAAA    Last date of change: 25 Feb 2022  |  | 
  |  |   P       Y      T    H   H   I   A   A                                      |  | 
- |  |   P       Y      T    H   H  III  A   A    Now is 09 May 2023 at 12:01:11    |  | 
+ |  |   P       Y      T    H   H  III  A   A    Now is 11 May 2023 at 23:33:01    |  | 
  |  |                                                                              |  | 
  |  |   Program documentation and an archive of historic versions is found on:     |  | 
  |  |                                                                              |  | 
@@ -210,9 +210,6 @@ SIGNAL SIMULATION
  PYTHIA Error in Pythia::next: hadronLevel failed; try again  
  PYTHIA Warning in SimpleSpaceShower::pT2nextQCD: weight above unity  
  PYTHIA Warning in SimpleTimeShower::pTnext: negative dipole mass.  
-signal normalization: 2.293 units?
-signal xsec: 0.008 picobarn
-Efficiency: 0.726
 
  *------------------------------------------------------------------------------------* 
  |                                                                                    | 
@@ -223,7 +220,7 @@ Efficiency: 0.726
  |  |   P  P   Y Y     T    H   H   I    A A     This is PYTHIA version 8.307      |  | 
  |  |   PPP     Y      T    HHHHH   I   AAAAA    Last date of change: 25 Feb 2022  |  | 
  |  |   P       Y      T    H   H   I   A   A                                      |  | 
- |  |   P       Y      T    H   H  III  A   A    Now is 09 May 2023 at 12:01:23    |  | 
+ |  |   P       Y      T    H   H  III  A   A    Now is 11 May 2023 at 23:33:13    |  | 
  |  |                                                                              |  | 
  |  |   Program documentation and an archive of historic versions is found on:     |  | 
  |  |                                                                              |  | 
@@ -341,9 +338,6 @@ DRELL-YAN SIMULATION
  PYTHIA Warning in SimpleSpaceShower::pT2nextQCD: small daughter PDF  
  PYTHIA Warning in SimpleSpaceShower::pT2nextQCD: weight above unity  
  PYTHIA Error in SimpleSpaceShower::pT2nearThreshold: stuck in loop  
-drellyan normalization: 13511776.000 units?
-drellyan xsec: 45039.254 picobarn
-Efficiency: 0.017
 
  *------------------------------------------------------------------------------------* 
  |                                                                                    | 
@@ -354,7 +348,7 @@ Efficiency: 0.017
  |  |   P  P   Y Y     T    H   H   I    A A     This is PYTHIA version 8.307      |  | 
  |  |   PPP     Y      T    HHHHH   I   AAAAA    Last date of change: 25 Feb 2022  |  | 
  |  |   P       Y      T    H   H   I   A   A                                      |  | 
- |  |   P       Y      T    H   H  III  A   A    Now is 09 May 2023 at 12:01:36    |  | 
+ |  |   P       Y      T    H   H  III  A   A    Now is 11 May 2023 at 23:33:26    |  | 
  |  |                                                                              |  | 
  |  |   Program documentation and an archive of historic versions is found on:     |  | 
  |  |                                                                              |  | 
@@ -481,6 +475,3 @@ TTBAR SIMULATION
  PYTHIA Warning in StringFragmentation::fragmentToJunction: bad convergence junction rest frame  
  PYTHIA Warning in SimpleTimeShower::findMEcorr: ME weight above PS one  
  PYTHIA Warning in SimpleTimeShower::pTnext: negative dipole mass.  
-ttbar normalization: 183832.828 units?
-ttbar xsec: 612.776 picobarn
-Efficiency: 0.087
