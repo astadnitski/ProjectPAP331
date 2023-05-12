@@ -67,7 +67,7 @@ void simulate(string channel, int N) {
         if (!pythia.next()) continue;
 
         //cout << endl;
-        //cout << "Loop iteration " << i << endl;
+        cout << "Loop iteration " << i << endl;
         
         int check = 0;
 
@@ -140,7 +140,7 @@ void simulate(string channel, int N) {
 
 int main() {
     simulate("signal", 1000);
-    simulate("drellyan", 1000);
-    simulate("ttbar", 1000);
+    simulate("drellyan", 100000);
+    simulate("ttbar", 100000);
     return 0;
 }

@@ -39,12 +39,11 @@ def filter0(channel):
     mu_m, pi_m = array('f', [0]), array('f', [0])
     Muons_F.Branch('m', mu_m, 'm/F')
     Pions_F.Branch('m', pi_m, 'm/F')
-
-    # This is just for helping to visualize stuff by printing arrays, will be removed later.
-    #ar = np.zeros([Muons.GetEntries(), 8]) # Could be also [, 7] if we throw out trigger flag
     
-    trigger = [0] * 1000
-
+    #emax = 0
+    #for muon in Muons: emax = max(emax, muon.Event)
+    print(Muons.GetMaximum('Event'), Pions.GetMaximum('Event'))
+    trigger = [0] * int(Pions.GetMaximum('Event') + 1)
     for muon in Muons:
         if muon.IsoMu20_eta2p1:
             trigger[muon.Event] += 1
@@ -59,16 +58,15 @@ def filter0(channel):
             mu_theta[0] = muon.theta
             mu_m[0] = muon.m
             Muons_F.Fill()
-            #ar[i] = [muon.Event, True, muon.pT, muon.eta, muon.charge, muon.phi, muon.theta, muon.m]
 
     for pion in Pions:
         if trigger[pion.Event] > 1:
-            Event[0] = pion.Event
-            pi_pT[0] = pion.pT
-            pi_eta[0] = pion.eta
-            pi_phi[0] = pion.phi
-            pi_m[0] = pion.m
-            Pions_F.Fill()
+                Event[0] = pion.Event
+                pi_pT[0] = pion.pT
+                pi_eta[0] = pion.eta
+                pi_phi[0] = pion.phi
+                pi_m[0] = pion.m
+                Pions_F.Fill()
 
     FILE.Close()
     Muons_F.Write()
@@ -202,9 +200,9 @@ def filter1(channel):
     
 def main():
 
-    filter0('signal')
-    filter0('drellyan')
-    filter0('ttbar') 
+    #filter0('signal')
+    #filter0('drellyan')
+    #filter0('ttbar') 
 
     filter1('signal')
     filter1('drellyan')

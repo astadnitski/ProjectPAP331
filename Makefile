@@ -10,8 +10,8 @@ ROOTLIBS = -L$(ROOTSYS)/lib -lCore -lTree -lMathCore -lRIO -lHist -lGpad
 all: 
 	$(MAKE) getPythia
 	$(MAKE) simulate
-	#$(MAKE) analyze
-	#$(MAKE) clean
+	$(MAKE) analyze
+	$(MAKE) clean
 
 getPythia:
 	@if [ -d "./pythia8307" ]; then echo "Pythia already installed"; else $(MAKE) getPythia0; fi

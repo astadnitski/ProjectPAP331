@@ -1,5 +1,45 @@
 # PAP331 Project Work
 
+## Structure of the project
+
+The project has two main components: a Simulation script, which generates events, and an Analysis script, which selects events based on the given criteria. The project as a whole can be run with the Makefile, or piece-by-piece with e.g. `make simulate` or `make analyze`.
+
+## Part 1: Event generation
+
+Events generated using Pythia in `Simulation.cc` and saved to ROOT files in `/Root/Level0`.
+
+The trigger efficiencies are calculated to be
+
+- Signal:
+
+- Drell-Yan: 
+
+- TTbar:
+
+## Part 2: Event analysis
+
+Events analyzed with multiple functions in `Analysis.py` and saved to in two subdirectories:
+
+- `/Root/Level1` contains only events that pass the HLT_DoubleIsoMu20_eta2p1 trigger
+
+- `/Root/Level2` contains only events that pass the criteria given in 2A
+
+The efficiencies at this stage are 
+
+- Signal:
+
+- Drell-Yan: 
+
+- TTbar:
+
+Reconstructing the invariant mass:
+
+Plots are saved to the `/Plots` subdirectory.
+
+## Part 3: Project assessment
+
+# Questions and things in progress
+
 - Look for background processes in Appendix A of Pythia documentation?
 
 - Which channels should be switched on?
