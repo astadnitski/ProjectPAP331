@@ -1,14 +1,12 @@
 from ROOT import *
 from array import array
-#import random
-#import os
 import numpy as np
 
 def filter0(channel):
 
     FILE = TFile.Open(('Root/Level0/' + channel + '.root'), 'READ')
     Muons, Pions = FILE.Get('Muons'), FILE.Get('Pions')
-    efficiency, normalization = FILE.Get('Efficiency'), FILE.Get('Normalization')
+    efficiency, xsection, events = FILE.Get('Efficiency'), FILE.Get('Cross section'), FILE.Get('Total events')
     
     FILE_F = TFile.Open(('Root/Level1/' + channel + '.root'), 'RECREATE')
     Muons_F = TTree('Muons', 'Muons passing the IsoMu20_eta2p1 trigger')
@@ -69,10 +67,13 @@ def filter0(channel):
                 Pions_F.Fill()
 
     FILE.Close()
+
+    efficiency.Write()
+    xsection.Write()
+    events.Write()
+
     Muons_F.Write()
     Pions_F.Write()
-    efficiency.Write()
-    normalization.Write()
     FILE_F.Close()
 
     print('Completed level 1 filtering of ' + channel)
@@ -91,7 +92,8 @@ def filter1(channel):
     Muons = FILE.Get('Muons')
     Pions = FILE.Get('Pions')
     efficiency = FILE.Get('Efficiency')
-    normalization = FILE.Get('Normalization')
+    xsection = FILE.Get('Cross section')
+    events = FILE.Get('Total events')
     
     FILE_F = TFile.Open(('Root/Level2/' + channel + '.root'), 'RECREATE')
     Muons_F = TTree('Muons', 'Muons passing the second set of triggers')
@@ -170,9 +172,7 @@ def filter1(channel):
                     mutrigger += 1
                 elif particle[5] == -1.0:
                     antimutrigger += 1
-        if mutrigger > 0 and antimutrigger > 0:
-            filtered.append(temp2)
-            #print(temp2)
+        if mutrigger > 0 and antimutrigger > 0: filtered.append(temp2)
             
     for element in filtered: #Filling and writing the Level 2 ROOT file with the filtered muons
         for particle in element:
@@ -189,7 +189,8 @@ def filter1(channel):
     Muons_F.Write()
     efficiency.SetTitle(str(len(filtered) / float(AllEvents)))
     efficiency.Write()
-    normalization.Write()
+    xsection.Write()
+    events.Write()
     FILE_F.Close()
 
     #print(filtered)
@@ -200,9 +201,9 @@ def filter1(channel):
     
 def main():
 
-    #filter0('signal')
-    #filter0('drellyan')
-    #filter0('ttbar') 
+    filter0('signal')
+    filter0('drellyan')
+    filter0('ttbar') 
 
     filter1('signal')
     filter1('drellyan')

@@ -23,7 +23,9 @@ void simulate(string channel, int N) {
     else if (!(strcmp(channel.c_str(), "drellyan"))) {
         cout << "DRELL-YAN SIMULATION" << endl;
         pythia.readString("WeakSingleBoson:ffbar2gmZ = on");
-        pythia.readString("PhaseSpace:mHatMin = 80.");
+        //pythia.readString("PhaseSpace:mHatMin = 80.");
+        pythia.readString("PhaseSpace:mHatMin = 120.");
+        pythia.readString("PhaseSpace:mHatMax = 130.");
     }
 
     else if (!(strcmp(channel.c_str(), "ttbar"))) {
@@ -66,7 +68,6 @@ void simulate(string channel, int N) {
 
         if (!pythia.next()) continue;
 
-        //cout << endl;
         cout << "Loop iteration " << i << endl;
         
         int check = 0;
@@ -112,25 +113,16 @@ void simulate(string channel, int N) {
         
     }
 
-    float xsec = pythia.info.sigmaGen(); // [mb]
-    int lumi = 300; // [fb^(-1)]
-    string norm = to_string(1e12 * xsec * lumi / N); // Pythia automatically weights by branching ratio
-
-    //cout << channel << " normalization: " << 1e12 * xsec * lumi / N << endl;
-    //cout << channel << " normalization to_string: " << norm << endl;
-    //cout << channel << " xsec: " << xsec * 1e9 << " picobarn" << endl;
-    //cout << "Efficiency: " << accepted / N << endl;
-
+    string xsec = to_string(1e12 * pythia.info.sigmaGen()); // [fb]
     string eff = to_string(accepted / N);
 
     TNamed* efficiency = new TNamed("Efficiency", eff);
-    TNamed* normalization = new TNamed("Normalization", norm);
+    TNamed* xsection = new TNamed("Cross section", xsec);
+    TNamed* events = new TNamed("Total events", to_string(N));
 
-    //efficiency -> SetTitle(dtostrf(accepted / N))
     efficiency -> Write();
-
-    //normalization -> SetTitle(dtostrf(norm))
-    normalization -> Write();
+    xsection -> Write();
+    events -> Write();
 
     muons -> Write();
     pions -> Write();
@@ -139,7 +131,7 @@ void simulate(string channel, int N) {
 }
 
 int main() {
-    simulate("signal", 1000);
+    simulate("signal", 10000);
     simulate("drellyan", 100000);
     simulate("ttbar", 100000);
     return 0;

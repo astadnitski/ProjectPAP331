@@ -2,23 +2,22 @@ import ROOT
 from array import array
 import numpy as np
 
-def BreitWigner(x, par):
-    return par[0] / ((x[0] - par[1])**2 + 0.25 * par[2]**2)
+def BreitWigner(x, par): return par[0] / ((x[0] - par[1])**2 + 0.25 * par[2]**2)
 
-def Landau(x, par):
-    return par[0] * np.exp(-0.5 * ((x[0] - par[1]) / par[2])**2)
+def Landau(x, par): return par[0] * np.exp(-0.5 * ((x[0] - par[1]) / par[2])**2)
+
+def norm(xsec, N): return 300 * float(xsec) / int(N)
 
 def invar_mass(channel):
 
     # Open the ROOT file
     FILE = ROOT.TFile.Open(('Root/Level2/' + channel + '.root'), 'READ')
     Muons = FILE.Get('Muons')
-    normalization = FILE.Get('Normalization').GetTitle()
-
-    print("normalization = ", normalization)
     
     FILE_F = ROOT.TFile.Open(('Root/InvariantMass/' + channel + '.root'), 'RECREATE')
     Muons_F = ROOT.TTree('Muons', 'Invariant mass of muons')
+    xsection = FILE.Get('Cross section')
+    events = FILE.Get('Total events')
 
     inMass = array('f', [0])
     Muons_F.Branch('inMass', inMass, 'inMass/F')
@@ -64,7 +63,7 @@ def invar_mass(channel):
         antimuon_vector.SetPtEtaPhiM(temppart_anti[1], temppart_anti[2], temppart_anti[4], temppart_anti[6])
         inMass[0] = (muon_vector+antimuon_vector).M()
 
-        print("inMass = ", inMass[0])
+        #print("inMass = ", inMass[0])
 
         if inMass[0] == 0:
             continue
@@ -73,6 +72,8 @@ def invar_mass(channel):
         Muons_F.Fill()
     
     # Write and close the output ROOT file
+    xsection.Write()
+    events.Write()
     FILE_F.Write()
     FILE_F.Close()
     FILE.Close()
@@ -171,12 +172,101 @@ def fit(channel1, channel2, channel3):
     drellyan.Close()
     ttbar.Close()
 
+def makePlots(channel1, channel2, channel3):
+    
+    # Open the ROOT file containing the histograms
+    signal = ROOT.TFile.Open('Root/InvariantMass/' + channel1 + '.root', 'READ')
+    drellyan = ROOT.TFile.Open('Root/InvariantMass/' + channel2 + '.root', 'READ')
+    ttbar = ROOT.TFile.Open('Root/InvariantMass/' + channel3 + '.root', 'READ')
+
+    signal_tree = signal.Get('Muons')
+    drellyan_tree = drellyan.Get('Muons')
+    ttbar_tree = ttbar.Get('Muons')
+
+    canvas = ROOT.TCanvas('canvas', 'Invariant mass of muons', 1280, 430)
+    canvas.Divide(3, 1)
+
+    N_signal = signal.Get('Total events').GetTitle()
+    N_drellyan = drellyan.Get('Total events').GetTitle()
+    N_ttbar = ttbar.Get('Total events').GetTitle()
+
+    # These numbers come from Pythia, inaccurate - may be off by orders of magnitude
+    xsec_signal = signal.Get('Cross section').GetTitle()
+    xsec_drellyan = drellyan.Get('Cross section').GetTitle()
+    xsec_ttbar = ttbar.Get('Cross section').GetTitle()
+
+    # These numbers come from Sami, multiplied by 1e3 to convert picobarns to femtobarns
+    #xsec_drellyan = 6025.2 * 1e3
+    #xsec_ttbar = 831.76 * 1e3   
+    # This I am not sure about, calculated manually. Supposed to be Higgs cross section * H -> mu mu BR
+    #xsec_signal = 54133.8 * 2.176e-4
+
+    norm_signal = norm(xsec_signal, N_signal)
+    norm_drellyan = norm(xsec_drellyan, N_drellyan)
+    norm_ttbar = norm(xsec_ttbar, N_ttbar)
+
+    print 'Signal: 300/fb * ' + str(xsec_signal) + ' fb / ' + str(N_signal) + ' = ' + str(norm_signal)
+    print 'Drell-Yan: 300/fb * ' + str(xsec_drellyan) + ' fb / ' + str(N_drellyan) + ' = ' + str(norm_drellyan)
+    print 'TTbar: 300/fb * ' + str(xsec_ttbar) + ' fb / ' + str(N_ttbar) + ' = ' + str(norm_ttbar)
+
+    hist_signal = ROOT.TH1F('hist_signal',
+                            'Invariant mass (norm: ' + str(norm_signal) + ')',
+                            50, 0, 200)
+    hist_drellyan = ROOT.TH1F('hist_drellyan',
+                              'Invariant mass (norm: ' + str(norm_drellyan) + ')',
+                              50, 0, 200)
+    hist_ttbar = ROOT.TH1F('hist_ttbar',
+                           'Invariant mass (norm: ' + str(norm_ttbar) + ')',
+                           50, 0, 200)
+
+    canvas.cd(1)
+    signal_tree.Draw('inMass>>hist_signal')
+    hist_signal.Scale(norm_signal, option = 'nosw2')
+    #hist_signal.Scale(2.293311, option = 'nosw2')
+
+    canvas.cd(2)
+    drellyan_tree.Draw('inMass>>hist_drellyan')
+    hist_drellyan.Scale(norm_drellyan, option = 'nosw2')
+
+    canvas.cd(3)
+    ttbar_tree.Draw('inMass>>hist_ttbar')
+    hist_ttbar.Scale(norm_ttbar, option = 'nosw2')
+
+    canvas.Print("Plots/TEST2.png")
+
+    hist_bg = ROOT.TH1F('hist_bg', 'Invariant mass (background)', 50, 0, 200)
+    hist_total = ROOT.TH1F('hist_total', 'Invariant (background + signal)', 50, 0, 200)
+    canvas = ROOT.TCanvas('canvas', 'Invariant mass of muons', 1280, 660)
+    canvas.Divide(2, 1)
+
+    canvas.cd(1)
+    drellyan_tree.Draw('inMass>>hist_bg')
+    hist_bg.Add(hist_drellyan, hist_ttbar)
+    hist_bg.GetXaxis().SetNdivisions(-8)
+    hist_bg.Draw()
+
+    canvas.cd(2)
+    drellyan_tree.Draw('inMass>>hist_total')
+    hist_total.Add(hist_drellyan, hist_ttbar)
+    hist_total.Add(hist_bg, hist_signal)
+    hist_total.GetXaxis().SetNdivisions(-8)
+    hist_total.Draw()
+
+    canvas.Print("Plots/TEST3.png")
+
+    # Close the ROOT files
+    signal.Close()
+    drellyan.Close()
+    ttbar.Close()
+
+
 def main():
 
-    invar_mass('signal')
-    invar_mass('drellyan')
-    invar_mass('ttbar') 
+    #invar_mass('signal')
+    #invar_mass('drellyan')
+    #invar_mass('ttbar') 
 
-    fit('signal', 'drellyan', 'ttbar')
+    #fit('signal', 'drellyan', 'ttbar')
+    makePlots('signal', 'drellyan', 'ttbar')
 
 if __name__ == '__main__': main() 

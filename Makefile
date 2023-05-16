@@ -11,6 +11,7 @@ all:
 	$(MAKE) getPythia
 	$(MAKE) simulate
 	$(MAKE) analyze
+	$(MAKE) invmass
 	$(MAKE) clean
 
 getPythia:
@@ -23,10 +24,10 @@ getPythia0:
 	@echo Installed Pythia
 
 analyze:
-	#@$(CXX) $(OPT) $(INC) Analysis.cc $(LIB) $(ROOTLIBS) -o analyze.exe
-	#@echo Compiled, running job script	
-	#@./analyze.job
 	@python2.7 Analysis.py
+
+invmass:
+	@python2.7 Invariant_mass.py
 
 simulate:
 	@$(CXX) $(OPT) $(INC) Simulation.cc $(LIB) $(ROOTLIBS) -o simulate.exe
