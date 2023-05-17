@@ -191,15 +191,15 @@ def makePlots(channel1, channel2, channel3):
     N_ttbar = ttbar.Get('Total events').GetTitle()
 
     # These numbers come from Pythia, inaccurate - may be off by orders of magnitude
-    xsec_signal = signal.Get('Cross section').GetTitle()
-    xsec_drellyan = drellyan.Get('Cross section').GetTitle()
-    xsec_ttbar = ttbar.Get('Cross section').GetTitle()
+    #xsec_signal = signal.Get('Cross section').GetTitle()
+    #xsec_drellyan = drellyan.Get('Cross section').GetTitle()
+    #xsec_ttbar = ttbar.Get('Cross section').GetTitle()
 
     # These numbers come from Sami, multiplied by 1e3 to convert picobarns to femtobarns
-    #xsec_drellyan = 6025.2 * 1e3
-    #xsec_ttbar = 831.76 * 1e3   
+    xsec_drellyan = (135281.434721 / 81150179.769282) * 6025.2 * 1e3
+    xsec_ttbar = 831.76 * 1e3   
     # This I am not sure about, calculated manually. Supposed to be Higgs cross section * H -> mu mu BR
-    #xsec_signal = 54133.8 * 2.176e-4
+    xsec_signal = 54133.8 * 2.176e-4
 
     norm_signal = norm(xsec_signal, N_signal)
     norm_drellyan = norm(xsec_drellyan, N_drellyan)
@@ -210,32 +210,44 @@ def makePlots(channel1, channel2, channel3):
     print 'TTbar: 300/fb * ' + str(xsec_ttbar) + ' fb / ' + str(N_ttbar) + ' = ' + str(norm_ttbar)
 
     hist_signal = ROOT.TH1F('hist_signal',
-                            'Invariant mass (norm: ' + str(norm_signal) + ')',
+                            'Signal (norm: ' + str(norm_signal) + ')',
                             50, 0, 200)
     hist_drellyan = ROOT.TH1F('hist_drellyan',
-                              'Invariant mass (norm: ' + str(norm_drellyan) + ')',
+                              'Drell-Yan background (norm: ' + str(norm_drellyan) + ')',
                               50, 0, 200)
     hist_ttbar = ROOT.TH1F('hist_ttbar',
-                           'Invariant mass (norm: ' + str(norm_ttbar) + ')',
+                           'TTbar background (norm: ' + str(norm_ttbar) + ')',
                            50, 0, 200)
 
     canvas.cd(1)
     signal_tree.Draw('inMass>>hist_signal')
     hist_signal.Scale(norm_signal, option = 'nosw2')
+    hist_signal.GetXaxis().SetTitle('Invariant mass [GeV]')
+    hist_signal.GetXaxis().CenterTitle(True)
+    hist_signal.SetLineColor(1)
+    hist_signal.SetFillColor(3)
     #hist_signal.Scale(2.293311, option = 'nosw2')
 
     canvas.cd(2)
     drellyan_tree.Draw('inMass>>hist_drellyan')
     hist_drellyan.Scale(norm_drellyan, option = 'nosw2')
+    hist_drellyan.GetXaxis().SetTitle('Invariant mass [GeV]')
+    hist_drellyan.GetXaxis().CenterTitle(True)
+    hist_drellyan.SetLineColor(1)
+    hist_drellyan.SetFillColor(4)
 
     canvas.cd(3)
     ttbar_tree.Draw('inMass>>hist_ttbar')
     hist_ttbar.Scale(norm_ttbar, option = 'nosw2')
+    hist_ttbar.GetXaxis().SetTitle('Invariant mass [GeV]')
+    hist_ttbar.GetXaxis().CenterTitle(True)
+    hist_ttbar.SetLineColor(1)
+    hist_ttbar.SetFillColor(2)
 
-    canvas.Print("Plots/TEST2.png")
+    canvas.Print("Plots/Channels.png")
 
-    hist_bg = ROOT.TH1F('hist_bg', 'Invariant mass (background)', 50, 0, 200)
-    hist_total = ROOT.TH1F('hist_total', 'Invariant (background + signal)', 50, 0, 200)
+    hist_bg = ROOT.TH1F('hist_bg', 'Background', 50, 0, 200)
+    hist_total = ROOT.TH1F('hist_total', 'Background + Signal', 50, 0, 200)
     canvas = ROOT.TCanvas('canvas', 'Invariant mass of muons', 1280, 660)
     canvas.Divide(2, 1)
 
@@ -243,6 +255,11 @@ def makePlots(channel1, channel2, channel3):
     drellyan_tree.Draw('inMass>>hist_bg')
     hist_bg.Add(hist_drellyan, hist_ttbar)
     hist_bg.GetXaxis().SetNdivisions(-8)
+    hist_bg.GetXaxis().SetTitle('Invariant mass [GeV]')
+    hist_bg.GetXaxis().CenterTitle(True)
+    hist_bg.SetAxisRange(0, 45000, 'Y')
+    hist_bg.SetLineColor(1)
+    hist_bg.SetFillColor(880)
     hist_bg.Draw()
 
     canvas.cd(2)
@@ -250,9 +267,14 @@ def makePlots(channel1, channel2, channel3):
     hist_total.Add(hist_drellyan, hist_ttbar)
     hist_total.Add(hist_bg, hist_signal)
     hist_total.GetXaxis().SetNdivisions(-8)
+    hist_total.GetXaxis().SetTitle('Invariant mass [GeV]')
+    hist_total.GetXaxis().CenterTitle(True)
+    hist_total.SetAxisRange(0, 45000, 'Y')
+    hist_total.SetLineColor(1)
+    hist_total.SetFillColor(13)
     hist_total.Draw()
 
-    canvas.Print("Plots/TEST3.png")
+    canvas.Print("Plots/SignalComparison.png")
 
     # Close the ROOT files
     signal.Close()
