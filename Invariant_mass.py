@@ -281,6 +281,32 @@ def makePlots(channel1, channel2, channel3):
     drellyan.Close()
     ttbar.Close()
 
+def statsig(channel):
+    FILE = TFile.Open(('Root/Level2/' + channel + '.root'), 'READ')
+    AllMuons = FILE.Get('Muons')
+    Muons = []
+    for i, muon in enumerate(AllMuons): #Filling the list Muons with all the filtered muons (can be changed to store less info for this part)
+        Event_number = muon.Event
+        muonpT = muon.pT
+        muonphi = muon.phi
+        muontheta = muon.theta
+        muoneta = muon.eta
+        muoncharge = muon.charge
+        muonm = muon.m
+        Muons.append([Event_number, muonpT, muoneta, muonphi, muonm, muoncharge, muontheta])
+    FILE.Close()
+    
+    finish = Muons[-1][0]
+    Events = []
+    
+    for i in range(finish+1): #Grouping the filtered Muons event by event
+        temp = []
+        for particle in Muons:
+            if particle[0] == i:
+                temp.append(particle)
+        Events.append(temp)
+        
+    return len(Events) #Returning the number of events
 
 def main():
 
@@ -290,5 +316,11 @@ def main():
 
     #fit('signal', 'drellyan', 'ttbar')
     makePlots('signal', 'drellyan', 'ttbar')
+    
+    SignalEvents = statsig('signal')
+    DYEvents = statsig('drellyan')
+    ttbarEvents = statsig('ttbar')
+    
+    print("The statistical signifigance is", SignalEvents/np.sqrt(DYEvents+ttbarEvents))
 
 if __name__ == '__main__': main() 
