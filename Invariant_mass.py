@@ -195,11 +195,10 @@ def makePlots(channel1, channel2, channel3):
     #xsec_drellyan = drellyan.Get('Cross section').GetTitle()
     #xsec_ttbar = ttbar.Get('Cross section').GetTitle()
 
-    # These numbers come from Sami, multiplied by 1e3 to convert picobarns to femtobarns
-    xsec_drellyan = (135281.434721 / 81150179.769282) * 6025.2 * 1e3
-    xsec_ttbar = 831.76 * 1e3   
-    # This I am not sure about, calculated manually. Supposed to be Higgs cross section * H -> mu mu BR
+    # These numbers are for 13 TeV, multiplied by 1e3 to convert picobarns to femtobarns
     xsec_signal = 54133.8 * 2.176e-4
+    xsec_drellyan = (135281.434721 / 81150179.769282) * 6025.2 * 1e3
+    xsec_ttbar = 831.76 * 1e3
 
     norm_signal = norm(xsec_signal, N_signal)
     norm_drellyan = norm(xsec_drellyan, N_drellyan)
@@ -209,15 +208,17 @@ def makePlots(channel1, channel2, channel3):
     print 'Drell-Yan: 300/fb * ' + str(xsec_drellyan) + ' fb / ' + str(N_drellyan) + ' = ' + str(norm_drellyan)
     print 'TTbar: 300/fb * ' + str(xsec_ttbar) + ' fb / ' + str(N_ttbar) + ' = ' + str(norm_ttbar)
 
+    bins, xmin, xmax = 60, 0, 400
+
     hist_signal = ROOT.TH1F('hist_signal',
                             'Signal (norm: ' + str(norm_signal) + ')',
-                            50, 0, 200)
+                            bins, xmin, xmax)
     hist_drellyan = ROOT.TH1F('hist_drellyan',
                               'Drell-Yan background (norm: ' + str(norm_drellyan) + ')',
-                              50, 0, 200)
+                              bins, xmin, xmax)
     hist_ttbar = ROOT.TH1F('hist_ttbar',
                            'TTbar background (norm: ' + str(norm_ttbar) + ')',
-                           50, 0, 200)
+                           bins, xmin, xmax)
 
     canvas.cd(1)
     signal_tree.Draw('inMass>>hist_signal')
@@ -226,7 +227,6 @@ def makePlots(channel1, channel2, channel3):
     hist_signal.GetXaxis().CenterTitle(True)
     hist_signal.SetLineColor(1)
     hist_signal.SetFillColor(3)
-    #hist_signal.Scale(2.293311, option = 'nosw2')
 
     canvas.cd(2)
     drellyan_tree.Draw('inMass>>hist_drellyan')
@@ -244,10 +244,10 @@ def makePlots(channel1, channel2, channel3):
     hist_ttbar.SetLineColor(1)
     hist_ttbar.SetFillColor(2)
 
-    canvas.Print("Plots/Channels.png")
+    canvas.Print('Plots/Channels.png')
 
-    hist_bg = ROOT.TH1F('hist_bg', 'Background', 50, 0, 200)
-    hist_total = ROOT.TH1F('hist_total', 'Background + Signal', 50, 0, 200)
+    hist_bg = ROOT.TH1F('hist_bg', 'Background', bins, xmin, xmax)
+    hist_total = ROOT.TH1F('hist_total', 'Background + Signal', bins, xmin, xmax)
     canvas = ROOT.TCanvas('canvas', 'Invariant mass of muons', 1280, 660)
     canvas.Divide(2, 1)
 
@@ -257,7 +257,7 @@ def makePlots(channel1, channel2, channel3):
     hist_bg.GetXaxis().SetNdivisions(-8)
     hist_bg.GetXaxis().SetTitle('Invariant mass [GeV]')
     hist_bg.GetXaxis().CenterTitle(True)
-    hist_bg.SetAxisRange(0, 45000, 'Y')
+    hist_bg.SetAxisRange(0, 65000, 'Y')
     hist_bg.SetLineColor(1)
     hist_bg.SetFillColor(880)
     hist_bg.Draw()
@@ -269,44 +269,25 @@ def makePlots(channel1, channel2, channel3):
     hist_total.GetXaxis().SetNdivisions(-8)
     hist_total.GetXaxis().SetTitle('Invariant mass [GeV]')
     hist_total.GetXaxis().CenterTitle(True)
-    hist_total.SetAxisRange(0, 45000, 'Y')
+    hist_total.SetAxisRange(0, 65000, 'Y')
     hist_total.SetLineColor(1)
     hist_total.SetFillColor(13)
     hist_total.Draw()
 
-    canvas.Print("Plots/SignalComparison.png")
+    canvas.Print('Plots/SignalComparison.png')
 
     # Close the ROOT files
     signal.Close()
     drellyan.Close()
     ttbar.Close()
 
+    return norm_signal, norm_drellyan, norm_ttbar
+
 def statsig(channel):
-    FILE = TFile.Open(('Root/Level2/' + channel + '.root'), 'READ')
-    AllMuons = FILE.Get('Muons')
-    Muons = []
-    for i, muon in enumerate(AllMuons): #Filling the list Muons with all the filtered muons (can be changed to store less info for this part)
-        Event_number = muon.Event
-        muonpT = muon.pT
-        muonphi = muon.phi
-        muontheta = muon.theta
-        muoneta = muon.eta
-        muoncharge = muon.charge
-        muonm = muon.m
-        Muons.append([Event_number, muonpT, muoneta, muonphi, muonm, muoncharge, muontheta])
-    FILE.Close()
-    
-    finish = Muons[-1][0]
-    Events = []
-    
-    for i in range(finish+1): #Grouping the filtered Muons event by event
-        temp = []
-        for particle in Muons:
-            if particle[0] == i:
-                temp.append(particle)
-        Events.append(temp)
-        
-    return len(Events) #Returning the number of events
+    FILE = ROOT.TFile.Open(('Root/Level2/' + channel + '.root'), 'READ')
+    EventIDs = []
+    for muon in FILE.Get('Muons'): EventIDs.append(muon.Event)
+    return len(set(EventIDs))
 
 def main():
 
@@ -315,12 +296,12 @@ def main():
     #invar_mass('ttbar') 
 
     #fit('signal', 'drellyan', 'ttbar')
-    makePlots('signal', 'drellyan', 'ttbar')
+    norm_signal, norm_drellyan, norm_ttbar = makePlots('signal', 'drellyan', 'ttbar')
     
-    SignalEvents = statsig('signal')
-    DYEvents = statsig('drellyan')
-    ttbarEvents = statsig('ttbar')
-    
-    print("The statistical signifigance is", SignalEvents/np.sqrt(DYEvents+ttbarEvents))
+    count_signal = statsig('signal') * norm_signal
+    count_drellyan = statsig('drellyan') * norm_drellyan
+    count_ttbar = statsig('ttbar') * norm_ttbar
+
+    print 'Statistical signifigance: ' + str(count_signal / np.sqrt(count_drellyan + count_ttbar))
 
 if __name__ == '__main__': main() 

@@ -38,9 +38,6 @@ def filter0(channel):
     Muons_F.Branch('m', mu_m, 'm/F')
     Pions_F.Branch('m', pi_m, 'm/F')
     
-    #emax = 0
-    #for muon in Muons: emax = max(emax, muon.Event)
-    print(Muons.GetMaximum('Event'), Pions.GetMaximum('Event'))
     trigger = [0] * int(Pions.GetMaximum('Event') + 1)
     for muon in Muons:
         if muon.IsoMu20_eta2p1:
@@ -120,61 +117,69 @@ def filter1(channel):
     Muons_F.Branch('m', mu_m, 'm/F')
 
     np.random.seed(3)
-    pions = []
-    for j, pion in enumerate(Pions):
-        pions.append([pion.Event, pion.pT, pion.eta, pion.phi, pion.m])
+    pions, muons = [], []
+
+    for pion in Pions: pions.append([pion.Event, pion.pT, pion.eta, pion.phi, pion.m])
             
-    muons = []
     for i, muon in enumerate(Muons):
         
-        # https://www.desmos.com/calculator/oj6mh6anxe
         rng = np.random.normal(0, 1, 3)
 
         Event_number = muon.Event
         muonpT = muon.pT + 0.01 * rng[0]
         muonphi = muon.phi + 0.002 * rng[1]
-        if muon.theta + 0.002 * rng[2] > 0:
-            muontheta = muon.theta + 0.002 * rng[2]
-        else:
-            muontheta = muon.theta
-        muoneta = -1 * np.log(np.tan((muontheta / 2)))        ### CHECK THAT THIS IS CORRECT
+        
+        if muon.theta + 0.002 * rng[2] > 0: muontheta = muon.theta + 0.002 * rng[2]
+        else: muontheta = muon.theta
+
+        muoneta = -1 * np.log(np.tan((muontheta / 2)))
         muoncharge = muon.charge
         muonm = muon.m
         muons.append([Event_number, muonpT, muoneta, muonphi, muonm, muoncharge, muontheta])
     
     temp = []    
-    for particle in muons: #Filtering and isolating the muons
+
+    # Filtering and isolating the muons
+    for particle in muons:
+
         pion_pTs = []
-        event_pions = []
         muon_vector = TLorentzVector()
-        muon_vector.SetPtEtaPhiM(particle[1],particle[2],particle[3],particle[4])
+        muon_vector.SetPtEtaPhiM(particle[1], particle[2], particle[3], particle[4])
+
         for subparticle in pions:
+
             if subparticle[0] == particle[0]:
+
                 pion_vector = TLorentzVector()
-                pion_vector.SetPtEtaPhiM(subparticle[1],subparticle[2],subparticle[3],subparticle[4])
-                if muon_vector.DeltaR(pion_vector) < 0.3:
-                    pion_pTs.append(subparticle[1])
-        if particle[1] > 30.0 and sum(pion_pTs) < 1.5:
-                temp.append(particle)
+                pion_vector.SetPtEtaPhiM(subparticle[1], subparticle[2], subparticle[3], subparticle[4])
+
+                if muon_vector.DeltaR(pion_vector) < 0.3: pion_pTs.append(subparticle[1])
+                    
+        if particle[1] > 30.0 and sum(pion_pTs) < 1.5: temp.append(particle)
                 
-                
-    finish = temp[-1][0]    
-    filtered = []
+    filtered = []      
+    finish = temp[-1][0] + 1  
     
-    for i in range(finish): #Filtering all the events that have >1 muons and have at least one antimuon and muon
+    # Filtering all the events that have at least one antimuon and muon
+    for i in range(finish):
+
         temp2 = []
         mutrigger = 0
         antimutrigger = 0
+
         for particle in temp:
+
             if particle[0] == i:
+
                 temp2.append(particle)
-                if particle[5] == 1.0:
-                    mutrigger += 1
-                elif particle[5] == -1.0:
-                    antimutrigger += 1
+
+                if particle[5] == 1.0: mutrigger += 1
+                elif particle[5] == -1.0: antimutrigger += 1
+
         if mutrigger > 0 and antimutrigger > 0: filtered.append(temp2)
             
-    for element in filtered: #Filling and writing the Level 2 ROOT file with the filtered muons
+    # Filling and writing the Level 2 ROOT file with the filtered muons
+    for element in filtered:
         for particle in element:
             Event_mu[0] = particle[0]
             mu_pT[0] = particle[1]
@@ -192,10 +197,6 @@ def filter1(channel):
     xsection.Write()
     events.Write()
     FILE_F.Close()
-
-    #print(filtered)
-    #print("The number of events passing the trigger for", channel, "is:", len(filtered)) 
-    #print("The trigger efficiency for", channel, "is:", len(filtered) / float(AllEvents))
     
     print('Completed level 2 filtering of ' + channel)
     

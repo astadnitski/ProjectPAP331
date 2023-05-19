@@ -32,7 +32,7 @@ void simulate(string channel, int N) {
         cout << "TTBAR SIMULATION" << endl;
         pythia.readString("Top:gg2ttbar = on");
         pythia.readString("Top:qqbar2ttbar = on");
-    } // Can be also Top ttbar all: on (last question: how to improve the analysis)
+    }
 
     else { return; }    
 
@@ -75,9 +75,7 @@ void simulate(string channel, int N) {
         for (int j = 0; j < pythia.event.size(); j++) {
 
             if (pythia.event[j].id() == 13 || pythia.event[j].id() == -13) {
-            
                 eventID = i;
-
                 mu_pT = pythia.event[j].pT();
                 mu_eta = pythia.event[j].eta();
                 mu_q = pythia.event[j].charge();
@@ -85,26 +83,17 @@ void simulate(string channel, int N) {
                 mu_theta = pythia.event[j].theta();
                 mu_m = pythia.event[j].m();
                 muons -> Fill();
-
                 trigger = HLT_DoubleIsoMu20_eta2p1(mu_pT, mu_eta);
                 check += trigger;
-
-                //cout << "Observed muon in event " << i << " with ID " << pythia.event[j].id() << endl;
-                //if (trigger) { cout << "This particle passed the trigger: " << trigger << endl; }
-
             }
 
             else if (pythia.event[j].id() == 211 || pythia.event[j].id() == -211) {
-
                 eventID = i;
-
                 pi_pT = pythia.event[j].pT();
                 pi_eta = pythia.event[j].eta();
                 pi_phi = pythia.event[j].phi();
                 pi_m = pythia.event[j].m();
-
                 pions -> Fill();
-
             }
             
         }
@@ -132,7 +121,7 @@ void simulate(string channel, int N) {
 
 int main() {
     simulate("signal", 10000);
-    simulate("drellyan", 100000);
-    simulate("ttbar", 100000);
+    simulate("drellyan", 1000000);
+    simulate("ttbar", 1000000);
     return 0;
 }
