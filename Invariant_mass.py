@@ -179,9 +179,7 @@ def makePlots(channel1, channel2, channel3):
     canvas.Update()
     
     # Save the canvas as a PDF file
-    canvas.SaveAs('Plots/Invariant_mass.pdf')
-    canvas.SaveAs('Plots/Invariant_mass.png')
-    canvas.SaveAs('Plots/Invariant_mass.root')
+    canvas.SaveAs('Plots/SignalComparison.png')
 
     # Close the ROOT files
     signal.Close()

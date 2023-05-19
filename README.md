@@ -58,6 +58,8 @@ Plots are saved to the `/Plots/` subdirectory.
 
 ![Signal comparison](https://github.com/astadnitski/ProjectPAP331/blob/main/Plots/SignalComparison.png?raw=true)
 
+In the above histograms, a small difference can be seen, as the peak at 125 GeV is slightly taller in the combined signal-and-background plot.
+
 Due to the limited phase space, the Landau fit is suitable for our needs. However, real data exhibits a more complex nature, necessitating the use of multiple background and signal fitting functions.
 
 ## Part 3: Project assessment
