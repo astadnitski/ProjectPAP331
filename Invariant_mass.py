@@ -41,8 +41,6 @@ def invar_mass(channel):
                 muonsInEvent.append(muon)
         event.append(muonsInEvent)
 
-    # print("event = ", event)
-
     for oneEvent in event:
         muonmaxPt = 0.0
         antimuonmaxPt = 0.0
@@ -62,8 +60,6 @@ def invar_mass(channel):
         muon_vector.SetPtEtaPhiM(temppart_muon[1], temppart_muon[2], temppart_muon[4], temppart_muon[6])
         antimuon_vector.SetPtEtaPhiM(temppart_anti[1], temppart_anti[2], temppart_anti[4], temppart_anti[6])
         inMass[0] = (muon_vector+antimuon_vector).M()
-
-        #print("inMass = ", inMass[0])
 
         if inMass[0] == 0:
             continue
@@ -204,9 +200,9 @@ def makePlots(channel1, channel2, channel3):
     norm_drellyan = norm(xsec_drellyan, N_drellyan)
     norm_ttbar = norm(xsec_ttbar, N_ttbar)
 
-    print 'Signal: 300/fb * ' + str(xsec_signal) + ' fb / ' + str(N_signal) + ' = ' + str(norm_signal)
-    print 'Drell-Yan: 300/fb * ' + str(xsec_drellyan) + ' fb / ' + str(N_drellyan) + ' = ' + str(norm_drellyan)
-    print 'TTbar: 300/fb * ' + str(xsec_ttbar) + ' fb / ' + str(N_ttbar) + ' = ' + str(norm_ttbar)
+    print('Signal: 300/fb * ' + str(xsec_signal) + ' fb / ' + str(N_signal) + ' = ' + str(norm_signal))
+    print('Drell-Yan: 300/fb * ' + str(xsec_drellyan) + ' fb / ' + str(N_drellyan) + ' = ' + str(norm_drellyan))
+    print('TTbar: 300/fb * ' + str(xsec_ttbar) + ' fb / ' + str(N_ttbar) + ' = ' + str(norm_ttbar))
 
     bins, xmin, xmax = 60, 0, 400
 
@@ -291,17 +287,17 @@ def statsig(channel):
 
 def main():
 
-    #invar_mass('signal')
-    #invar_mass('drellyan')
-    #invar_mass('ttbar') 
+    invar_mass('signal')
+    invar_mass('drellyan')
+    invar_mass('ttbar') 
 
-    #fit('signal', 'drellyan', 'ttbar')
+    fit('signal', 'drellyan', 'ttbar')
     norm_signal, norm_drellyan, norm_ttbar = makePlots('signal', 'drellyan', 'ttbar')
     
     count_signal = statsig('signal') * norm_signal
     count_drellyan = statsig('drellyan') * norm_drellyan
     count_ttbar = statsig('ttbar') * norm_ttbar
 
-    print 'Statistical signifigance: ' + str(count_signal / np.sqrt(count_drellyan + count_ttbar))
+    print('Statistical signifigance: ' + str(count_signal / np.sqrt(count_drellyan + count_ttbar)))
 
 if __name__ == '__main__': main() 

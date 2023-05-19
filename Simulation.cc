@@ -67,8 +67,6 @@ void simulate(string channel, int N) {
     for (int i = 0; i < N; i++) {
 
         if (!pythia.next()) continue;
-
-        cout << "Loop iteration " << i << endl;
         
         int check = 0;
 
