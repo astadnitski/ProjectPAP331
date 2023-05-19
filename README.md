@@ -48,16 +48,18 @@ Plots are saved to the `/Plots` subdirectory.
 
 - Using simulations and not detector simulations x
 
-- Something about the phase space limitation on Drell-Yan background
+- Something about the phase space limitation on Drell-Yan background x
 
-- Statistical significance: check sigma
+- Statistical significance: check sigma x
 
 - Optimize selection
 
 
-The results are not perfect. The main reason is because Pythia is a generator-level simulation program. The results of the invariant mass and everything else should also be simulated with a detector-level simulator such as GEANT4. After simulations with GEANT4, the results would be closer to the actual data values. Another reason is that the program only includes some of the backgrounds and not all. In this program, only Drell-Yan and ttbar backgrounds are taken into the account. There are also multiple other backgrounds that should be taken into account (for example W-boson and jets). By including the other backgrounds, the results would be more realistic.
+The results are not perfect. The main reason is because Pythia is a generator-level simulation program. The results of the invariant mass and everything else should also be simulated with a detector-level simulator such as GEANT4. After simulations with GEANT4, the results would be closer to the actual data values. Another reason is that the program only includes some of the backgrounds and not all. In this program, only Drell-Yan and ttbar backgrounds are taken into the account. There are also multiple other backgrounds that should be taken into account (for example W-boson and jets). By including the other backgrounds, the results would be more realistic. The Drell-Yan background has also the phase space limited to 120-130. By changing these limits to something else, the amount of events that pass through the filters will also change for the Drell-Yan background. 
 
 There are also parts in the code that make the results unreliable. One of them is in the Gaussian smearing. Some of the values for Muons' thetas were so close to zero that after Gaussian smearing, some of the values became negative. This is not possible because they are outside the domain. This was prevented by not doing the Gaussian smearing on those values (aka they were not smeared for the final, filtered data). Another one is doing the reconstruction by leading order of transverse momenta. Some of the events had produced more than two muons and antimuons (three or more). The program only reads the leading order values of transverse momenta for muon and antimuon, and reconstructs the invariant mass using only these two. This could also be done by using different permutations of the muon and antimuon pairs to get more accurate data and results.
+
+The statistical significance obtained from the program is 1.8σ which is way under the 5σ threshold for discovery. However, this statistical significance result becomes more realistic after doing the generator-level simulations and taking into account other backgrounds or next-to or next-to-next-to leading order processes.
 
 # Questions and things in progress
 
