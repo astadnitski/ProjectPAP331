@@ -2,10 +2,6 @@ import ROOT
 from array import array
 import numpy as np
 
-def BreitWigner(x, par): return par[0] / ((x[0] - par[1])**2 + 0.25 * par[2]**2)
-
-def Landau(x, par): return par[0] * np.exp(-0.5 * ((x[0] - par[1]) / par[2])**2)
-
 def norm(xsec, N): return 300 * float(xsec) / int(N)
 
 def invar_mass(channel):
@@ -85,27 +81,7 @@ def fit(channel1, channel2, channel3):
     signal_tree = signal.Get('Muons')
     drellyan_tree = drellyan.Get('Muons')
     ttbar_tree = ttbar.Get('Muons')
-
-    # signalmass = array('f', [0])
-    # drellyanmass = array('f', [0])
-    # ttbarmass = array('f', [0])
-
-    # signalbranch = signal_tree.GetBranch('inMass')
-    # drellyanbranch = drellyan_tree.GetBranch('inMass')
-    # ttbarbranch = ttbar_tree.GetBranch('inMass')
-
-    # # Set the branch address
-    # signalbranch.SetAddress(signalmass)
-    # drellyanbranch.SetAddress(drellyanmass)
-    # ttbarbranch.SetAddress(ttbarmass)
-
-    # Create a canvas and draw the histograms
-    canvas = ROOT.TCanvas('canvas', 'Invariant mass of muons', 1000, 1000)
-
-    canvas.Divide(2, 1)
-
-    pad1 = canvas.cd(1)
-
+    
     # Create a histogram for the invariant mass
     hist_signal = ROOT.TH1F('hist_signal', 'Invariant mass of muons', 100, 124, 126)
     hist_drellyan = ROOT.TH1F('hist_drellyan', 'Invariant mass of muons', 100, 0, 126)
@@ -116,53 +92,52 @@ def fit(channel1, channel2, channel3):
     drellyan_tree.Draw('inMass>>hist_drellyan')
     ttbar_tree.Draw('inMass>>hist_ttbar')
 
-    # Create a background histogram
-    # hist_background = hist_drellyan
+    # Create a canvas and draw the histograms
+    canvas = ROOT.TCanvas('canvas', 'Invariant mass of muons', 1280, 660)
+    canvas.Divide(2, 1)
+
+    canvas.cd(1)
+    drellyan_tree.Draw('inMass>>hist_bg')
+    hist_bg.Add(hist_drellyan, hist_ttbar)
+    hist_bg.GetXaxis().SetNdivisions(-8)
+    hist_bg.GetXaxis().SetTitle('Invariant mass [GeV]')
+    hist_bg.GetXaxis().CenterTitle(True)
+    hist_bg.SetAxisRange(0, 65000, 'Y')
+    hist_bg.SetLineColor(1)
+    hist_bg.SetFillColor(880)
+    
+    
+    canvas.cd(2)
+
+
 
     hist_background = hist_drellyan.Clone("hist_background")
 
     hist_background.Add(hist_background, hist_ttbar, 1.0, 1.0)
 
-    # hist_total = hist_signal
-
     hist_total = hist_signal.Clone("hist_total")
     hist_total.Add(hist_total, hist_background, 1.0, 1.0)
-
-    fit_total = ROOT.TF1('fit_total', BreitWigner,  0, 126, 3)
-    fit_total.SetParameters(100, 125, 1)
-    fit_total.SetParNames('Constant', 'Mean', 'Gamma')
+    
+    fit_total = ROOT.TF1('fit_total', "landau", 120, 130)
     fit_total.SetLineColor(ROOT.kRed)
-
-    # # Create a legend and add the histograms to it
-    # legend = ROOT.TLegend(0.6, 0.7, 0.9, 0.9)
-    # legend.AddEntry(hist_total, 'Signal + Background', 'l')
-    # legend.AddEntry(hist_background, 'Background', 'l')
-    # legend.AddEntry(fit_total, 'Breit-Wigner', 'l')
-
-    # # Draw the legend
-    # legend.Draw()
-
-    # Fit the histograms with the Breit-Wigner function
     hist_total.Fit(fit_total)
-
-    # Draw the histograms
     hist_total.Draw()
+    fit_total.Draw('same')
+    canvas.Update()
 
-    pad2 = canvas.cd(2)
-
-    fit_background = ROOT.TF1('fit_background', Landau, 90, 93, 3)
-    fit_background.SetParameters(90, 93, 1)
-    fit_background.SetParNames('Constant', 'Mean', 'Sigma')
+    canvas.cd(1)
+        
+    fit_background = ROOT.TF1('fit_background', "landau", 120, 130)
     fit_background.SetLineColor(ROOT.kBlack)
-
+    hist_bg.Fit(fit_background)
     hist_background.Fit(fit_background)
-
     hist_background.Draw()
+    fit_background.Draw('same')
+    canvas.Update()
 
     # Save the canvas as a PDF file
     canvas.SaveAs('Plots/' + channel1 + '.pdf')
-    canvas.Print("Plots/TEST1.png")
-
+    
     # Close the ROOT files
     signal.Close()
     drellyan.Close()
@@ -185,11 +160,6 @@ def makePlots(channel1, channel2, channel3):
     N_signal = signal.Get('Total events').GetTitle()
     N_drellyan = drellyan.Get('Total events').GetTitle()
     N_ttbar = ttbar.Get('Total events').GetTitle()
-
-    # These numbers come from Pythia, inaccurate - may be off by orders of magnitude
-    #xsec_signal = signal.Get('Cross section').GetTitle()
-    #xsec_drellyan = drellyan.Get('Cross section').GetTitle()
-    #xsec_ttbar = ttbar.Get('Cross section').GetTitle()
 
     # These numbers are for 13 TeV, multiplied by 1e3 to convert picobarns to femtobarns
     xsec_signal = 54133.8 * 2.176e-4
