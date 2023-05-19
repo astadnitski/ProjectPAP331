@@ -82,15 +82,26 @@ def fit(channel1, channel2, channel3):
     drellyan_tree = drellyan.Get('Muons')
     ttbar_tree = ttbar.Get('Muons')
     
-    # Create a histogram for the invariant mass
-    hist_signal = ROOT.TH1F('hist_signal', 'Invariant mass of muons', 100, 124, 126)
-    hist_drellyan = ROOT.TH1F('hist_drellyan', 'Invariant mass of muons', 100, 0, 126)
-    hist_ttbar = ROOT.TH1F('hist_ttbar', 'Invariant mass of muons', 100, 0, 126)
+    bins, xmin, xmax = 60, 0, 400
+
+    hist_signal = ROOT.TH1F('hist_signal',
+                            'Signal (norm: ' + str(norm_signal) + ')',
+                            bins, xmin, xmax)
+    hist_drellyan = ROOT.TH1F('hist_drellyan',
+                              'Drell-Yan background (norm: ' + str(norm_drellyan) + ')',
+                              bins, xmin, xmax)
+    hist_ttbar = ROOT.TH1F('hist_ttbar',
+                           'TTbar background (norm: ' + str(norm_ttbar) + ')',
+                           bins, xmin, xmax)
 
     # Fill the histograms
     signal_tree.Draw('inMass>>hist_signal')
     drellyan_tree.Draw('inMass>>hist_drellyan')
     ttbar_tree.Draw('inMass>>hist_ttbar')
+    
+    # Create a histogram for the invariant mass
+    hist_bg = ROOT.TH1F('hist_bg', 'Background', bins, xmin, xmax)
+    hist_total = ROOT.TH1F('hist_total', 'Background + Signal', bins, xmin, xmax)
 
     # Create a canvas and draw the histograms
     canvas = ROOT.TCanvas('canvas', 'Invariant mass of muons', 1280, 660)
@@ -105,28 +116,7 @@ def fit(channel1, channel2, channel3):
     hist_bg.SetAxisRange(0, 65000, 'Y')
     hist_bg.SetLineColor(1)
     hist_bg.SetFillColor(880)
-    
-    
-    canvas.cd(2)
-
-
-
-    hist_background = hist_drellyan.Clone("hist_background")
-
-    hist_background.Add(hist_background, hist_ttbar, 1.0, 1.0)
-
-    hist_total = hist_signal.Clone("hist_total")
-    hist_total.Add(hist_total, hist_background, 1.0, 1.0)
-    
-    fit_total = ROOT.TF1('fit_total', "landau", 120, 130)
-    fit_total.SetLineColor(ROOT.kRed)
-    hist_total.Fit(fit_total)
-    hist_total.Draw()
-    fit_total.Draw('same')
-    canvas.Update()
-
-    canvas.cd(1)
-        
+         
     fit_background = ROOT.TF1('fit_background', "landau", 120, 130)
     fit_background.SetLineColor(ROOT.kBlack)
     hist_bg.Fit(fit_background)
@@ -134,7 +124,23 @@ def fit(channel1, channel2, channel3):
     hist_background.Draw()
     fit_background.Draw('same')
     canvas.Update()
+    
+    canvas.cd(2)
+    hist_total.Add(hist_bg, hist_signal)
+    hist_total.GetXaxis().SetNdivisions(-8)
+    hist_total.GetXaxis().SetTitle('Invariant mass [GeV]')
+    hist_total.GetXaxis().CenterTitle(True)
+    hist_total.SetAxisRange(0, 65000, 'Y')
+    hist_total.SetLineColor(1)
+    hist_total.SetFillColor(13)
 
+    fit_total = ROOT.TF1('fit_total', "landau", 120, 130)
+    fit_total.SetLineColor(ROOT.kRed)
+    hist_total.Fit(fit_total)
+    hist_total.Draw()
+    fit_total.Draw('same')
+    canvas.Update()
+    
     # Save the canvas as a PDF file
     canvas.SaveAs('Plots/' + channel1 + '.pdf')
     
@@ -230,7 +236,6 @@ def makePlots(channel1, channel2, channel3):
 
     canvas.cd(2)
     drellyan_tree.Draw('inMass>>hist_total')
-    hist_total.Add(hist_drellyan, hist_ttbar)
     hist_total.Add(hist_bg, hist_signal)
     hist_total.GetXaxis().SetNdivisions(-8)
     hist_total.GetXaxis().SetTitle('Invariant mass [GeV]')
